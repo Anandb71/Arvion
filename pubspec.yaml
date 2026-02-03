@@ -1,0 +1,37 @@
+name: arvion
+description: "A contribution graph for your life - Desktop-first productivity OS"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: ^2.6.1
+  
+  # Database
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  path_provider: ^2.1.5
+  
+  # Fonts
+  google_fonts: ^6.2.1
+  
+  # UI
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  
+  # Code generation for Isar
+  isar_generator: ^3.1.0+1
+  build_runner: ^2.4.13
+
+flutter:
+  uses-material-design: true
