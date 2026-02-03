@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/data_export_service.dart';
 import '../services/ai_service.dart';
+import '../services/verification_service.dart';
 import '../data/database/isar_database.dart';
 import '../data/repositories/task_repository.dart';
 import '../data/repositories/commit_repository.dart';
@@ -247,4 +248,16 @@ final aiServiceProvider = Provider<AIService>((ref) {
   return AIService(
     taskRepository: ref.watch(taskRepositoryProvider),
   );
+});
+
+/// Verification Service provider (Auto-starts monitoring)
+final verificationServiceProvider = Provider<VerificationService>((ref) {
+  final service = VerificationService(
+    taskRepository: ref.watch(taskRepositoryProvider),
+    commitRepository: ref.watch(commitRepositoryProvider),
+  );
+  // Auto-start only in release/debug run (not tests)
+  service.start();
+  ref.onDispose(() => service.stop());
+  return service;
 });

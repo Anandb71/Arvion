@@ -120,6 +120,8 @@ class _AppShellState extends ConsumerState<AppShell> {
   @override
   Widget build(BuildContext context) {
     final dbInitialized = ref.watch(databaseInitializedProvider);
+    // Ensure verification service is running
+    ref.watch(verificationServiceProvider);
 
     return dbInitialized.when(
       data: (_) => KeyboardListener(
