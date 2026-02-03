@@ -1,99 +1,193 @@
-﻿# 🟩 Arvion
+﻿<div align="center">
 
-> A contribution graph for your life — Desktop-first productivity OS
+# 🌿 Arvion
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.10+-02569B?logo=flutter)](https://flutter.dev)
-[![Desktop](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen)](https://flutter.dev/multi-platform/desktop)
+**A beautiful, GitHub-style contribution tracker for your life**
 
-## Overview
+[![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart)](https://dart.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?logo=windows)](https://www.microsoft.com/windows)
 
-Arvion transforms personal productivity into a developer-like experience. Your life tasks become **repositories**, your actions become **commits**, and your progress is visualized through a beautiful **contribution heatmap**.
+*Track anything. Visualize everything. Commit to your goals.*
 
-### Design DNA
-
-| Element | Value |
-|---------|-------|
-| 🟢 Primary | `#00D26A` (Growth Green) |
-| 🔵 Secondary | `#0969DA` (GitHub Blue) |
-| ⬛ Background | `#000000` (OLED Black) |
-| Font | Inter + JetBrains Mono |
-
-## Features
-
-- **🗓️ Contribution Heatmap** — GitHub-style grid with compile-in animation
-- **📋 Task Manager** — Track life goals as repositories
-- **🎯 Protocols** — Set targets with weekly goals and deadlines  
-- **📊 Dashboard** — Real-time stats and daily summaries
-- **⌨️ Command Palette** — Quick actions with `Ctrl+K`
-- **🌙 OLED Dark Mode** — Pure black for battery and eyes
-
-## Getting Started
-
-### Prerequisites
-
-- Flutter 3.10+
-- Windows/macOS/Linux with desktop support enabled
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/Anandb71/Arvion.git
-cd Arvion
-
-# Get dependencies
-flutter pub get
-
-# Generate Isar models
-dart run build_runner build --delete-conflicting-outputs
-
-# Run on desktop
-flutter run -d windows  # or macos, linux
-```
-
-## Project Structure
-
-```
-lib/
-├── app.dart                 # Main app shell
-├── main.dart                # Entry point
-├── core/
-│   ├── theme/               # Colors, typography, theme
-│   └── constants/           # App constants
-├── data/
-│   ├── models/              # Task, Commit, Protocol
-│   ├── repositories/        # Data access layer
-│   └── database/            # Isar configuration
-├── providers/               # Riverpod state management
-├── features/
-│   ├── dashboard/           # Main dashboard + heatmap
-│   ├── tasks/               # Task management
-│   ├── protocols/           # Goal protocols
-│   └── settings/            # App settings
-└── widgets/                 # Shared UI components
-```
-
-## Tech Stack
-
-- **Framework**: Flutter (Desktop + Web)
-- **State**: Riverpod
-- **Database**: Isar
-- **Fonts**: Google Fonts (Inter, JetBrains Mono)
-
-## Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+K` | Command Palette |
-| `Ctrl+N` | New Task |
-| `Ctrl+Enter` | Quick Commit |
-
-## License
-
-MIT License — see [LICENSE](LICENSE) for details
+</div>
 
 ---
 
-<p align="center">
-  <sub>Built with 💚 for productivity enthusiasts</sub>
-</p>
+## ✨ Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 📊 **Contribution Heatmap**
+GitHub-style visualization of your daily progress with beautiful animations and multi-color support for different tasks.
+
+### 🎯 **Task Tracking**
+Create color-coded tasks to track any habit, goal, or project. Each task gets its own contribution graph.
+
+### ⚡ **Quick Commits**
+Log your progress with one click. Choose intensity levels (1-5) to show how much effort you put in.
+
+</td>
+<td width="50%">
+
+### 📈 **Per-Task Graphs**
+View individual heatmaps for each task, showing exactly when and how much you worked on each goal.
+
+### 🎨 **Premium Dark Theme**
+Sleek, modern interface designed for focus and productivity with glassmorphism effects.
+
+### ⌨️ **Keyboard First**
+Command palette (Ctrl+K) for quick navigation and actions. Designed for power users.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📸 Screenshots
+
+### Dashboard
+![Dashboard](docs/screenshots/dashboard.png)
+*Main dashboard with contribution graph, daily summary, and quick commit button*
+
+### Per-Task Graphs
+![Task Graphs](docs/screenshots/task-graphs.png)
+*Individual heatmaps for each task with their own colors*
+
+### Task Management
+![Tasks](docs/screenshots/tasks.png)
+*Create and manage your life repositories*
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) 3.0+
+- Windows 10/11 (for Windows build)
+- Visual Studio 2022 with C++ workload (for Windows build)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/arvion.git
+   cd arvion
+   ```
+
+2. **Install dependencies**
+   ```bash
+   flutter pub get
+   ```
+
+3. **Run the app**
+   ```bash
+   flutter run -d windows
+   ```
+
+### Building for Production
+
+```bash
+flutter build windows --release
+```
+
+The built executable will be in `build/windows/x64/runner/Release/`.
+
+---
+
+## 🏗️ Architecture
+
+```
+lib/
+├── core/               # Theme, constants, utilities
+│   ├── theme/          # Colors, typography, theme data
+│   └── constants/      # App-wide constants
+├── data/               # Data layer
+│   ├── models/         # Isar database models
+│   ├── database/       # Database initialization
+│   └── repositories/   # Data access patterns
+├── features/           # Feature modules
+│   ├── dashboard/      # Main dashboard with heatmap
+│   ├── tasks/          # Task management
+│   └── settings/       # App settings
+├── providers/          # Riverpod state management
+└── widgets/            # Shared UI components
+```
+
+### Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Framework** | Flutter 3.x |
+| **State Management** | Riverpod |
+| **Database** | Isar (embedded NoSQL) |
+| **UI Components** | Custom widgets with glassmorphism |
+| **Platform** | Windows (macOS/Linux coming soon) |
+
+---
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl + K` | Open command palette |
+| `Escape` | Close dialogs/overlay |
+| `Ctrl + N` | Create new task |
+
+---
+
+## 🛣️ Roadmap
+
+- [x] Core dashboard with heatmap
+- [x] Task creation and management
+- [x] Quick commit functionality
+- [x] Per-task contribution graphs
+- [x] Multi-color heatmap cells
+- [ ] Protocols (daily/weekly routines)
+- [ ] Insights & analytics
+- [ ] Data export (JSON/CSV)
+- [ ] Cloud sync
+- [ ] macOS support
+- [ ] Linux support
+- [ ] Mobile apps (iOS/Android)
+
+---
+
+## 🤝 Contributing
+
+We love contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- Inspired by GitHub's contribution graph
+- Built with [Flutter](https://flutter.dev) and [Riverpod](https://riverpod.dev)
+- Database powered by [Isar](https://isar.dev)
+
+---
+
+<div align="center">
+
+**Made with 💚 for productivity enthusiasts**
+
+[Report Bug](https://github.com/yourusername/arvion/issues) · [Request Feature](https://github.com/yourusername/arvion/issues)
+
+</div>

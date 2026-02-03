@@ -113,40 +113,46 @@ class _AppShellState extends ConsumerState<AppShell> {
         onKeyEvent: _handleKeyEvent,
         child: Scaffold(
           backgroundColor: ArvionColors.background,
-          body: Stack(
-            children: [
-              Row(
-                children: [
-                  // Navigation rail
-                  NavRail(
-                    selectedIndex: selectedIndex,
-                    onDestinationSelected: (index) {
-                      ref.read(navigationIndexProvider.notifier).state = index;
-                    },
-                    items: _navItems,
-                  ),
-                  // Main content
-                  Expanded(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: _buildScreen(selectedIndex),
+          body: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minWidth: 600,
+              minHeight: 400,
+            ),
+            child: Stack(
+              children: [
+                Row(
+                  children: [
+                    // Navigation rail
+                    NavRail(
+                      selectedIndex: selectedIndex,
+                      onDestinationSelected: (index) {
+                        ref.read(navigationIndexProvider.notifier).state = index;
+                      },
+                      items: _navItems,
                     ),
-                  ),
-                ],
-              ),
-              // Command palette overlay
-              if (_showCommandPalette)
-                GestureDetector(
-                  onTap: () => setState(() => _showCommandPalette = false),
-                  child: Container(
-                    color: Colors.black54,
-                    child: CommandPalette(
-                      commands: _commands,
-                      onClose: () => setState(() => _showCommandPalette = false),
+                    // Main content
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: _buildScreen(selectedIndex),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-            ],
+                // Command palette overlay
+                if (_showCommandPalette)
+                  GestureDetector(
+                    onTap: () => setState(() => _showCommandPalette = false),
+                    child: Container(
+                      color: Colors.black54,
+                      child: CommandPalette(
+                        commands: _commands,
+                        onClose: () => setState(() => _showCommandPalette = false),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

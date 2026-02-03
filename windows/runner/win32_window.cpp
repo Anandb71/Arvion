@@ -197,6 +197,15 @@ Win32Window::MessageHandler(HWND hwnd,
 
       return 0;
     }
+
+    // Enforce minimum window size
+    case WM_GETMINMAXINFO: {
+      MINMAXINFO* minMaxInfo = reinterpret_cast<MINMAXINFO*>(lparam);
+      minMaxInfo->ptMinTrackSize.x = 800;  // Minimum width
+      minMaxInfo->ptMinTrackSize.y = 600;  // Minimum height
+      return 0;
+    }
+
     case WM_SIZE: {
       RECT rect = GetClientArea();
       if (child_content_ != nullptr) {
