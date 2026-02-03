@@ -16,6 +16,7 @@ class ArvionColors {
   static const Color surface = Color(0xFF0D1117);
   static const Color surfaceLight = Color(0xFF161B22);
   static const Color surfaceLighter = Color(0xFF21262D);
+  static const Color cardBg = Color(0xFF161B22);
   
   // Text Colors
   static const Color textPrimary = Color(0xFFE6EDF3);

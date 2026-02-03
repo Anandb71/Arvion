@@ -17,94 +17,65 @@ const ProtocolSchema = CollectionSchema(
   name: r'Protocol',
   id: -5760239004301737085,
   properties: {
-    r'colorTheme': PropertySchema(
+    r'colorHex': PropertySchema(
       id: 0,
-      name: r'colorTheme',
-      type: IsarType.string,
-    ),
-    r'conditions': PropertySchema(
-      id: 1,
-      name: r'conditions',
+      name: r'colorHex',
       type: IsarType.string,
     ),
     r'createdAt': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'createdAt',
       type: IsarType.dateTime,
     ),
-    r'customColorHex': PropertySchema(
-      id: 3,
-      name: r'customColorHex',
-      type: IsarType.string,
-    ),
-    r'daysRemaining': PropertySchema(
-      id: 4,
-      name: r'daysRemaining',
+    r'currentStreak': PropertySchema(
+      id: 2,
+      name: r'currentStreak',
       type: IsarType.long,
     ),
-    r'deadline': PropertySchema(
-      id: 5,
-      name: r'deadline',
-      type: IsarType.dateTime,
+    r'daysOfWeek': PropertySchema(
+      id: 3,
+      name: r'daysOfWeek',
+      type: IsarType.longList,
     ),
     r'description': PropertySchema(
-      id: 6,
+      id: 4,
       name: r'description',
       type: IsarType.string,
     ),
-    r'failedWeeks': PropertySchema(
-      id: 7,
-      name: r'failedWeeks',
-      type: IsarType.long,
-    ),
-    r'failureRules': PropertySchema(
-      id: 8,
-      name: r'failureRules',
-      type: IsarType.string,
-    ),
-    r'isAchieved': PropertySchema(
-      id: 9,
-      name: r'isAchieved',
-      type: IsarType.bool,
+    r'frequency': PropertySchema(
+      id: 5,
+      name: r'frequency',
+      type: IsarType.byte,
+      enumMap: _ProtocolfrequencyEnumValueMap,
     ),
     r'isActive': PropertySchema(
-      id: 10,
+      id: 6,
       name: r'isActive',
       type: IsarType.bool,
     ),
-    r'isOverdue': PropertySchema(
-      id: 11,
-      name: r'isOverdue',
-      type: IsarType.bool,
+    r'lastCompletedAt': PropertySchema(
+      id: 7,
+      name: r'lastCompletedAt',
+      type: IsarType.dateTime,
     ),
-    r'linkedTaskIds': PropertySchema(
-      id: 12,
-      name: r'linkedTaskIds',
-      type: IsarType.longList,
+    r'longestStreak': PropertySchema(
+      id: 8,
+      name: r'longestStreak',
+      type: IsarType.long,
     ),
-    r'name': PropertySchema(
-      id: 13,
-      name: r'name',
+    r'reminderTime': PropertySchema(
+      id: 9,
+      name: r'reminderTime',
+      type: IsarType.long,
+    ),
+    r'title': PropertySchema(
+      id: 10,
+      name: r'title',
       type: IsarType.string,
     ),
-    r'progressPercent': PropertySchema(
-      id: 14,
-      name: r'progressPercent',
-      type: IsarType.double,
-    ),
-    r'successfulWeeks': PropertySchema(
-      id: 15,
-      name: r'successfulWeeks',
-      type: IsarType.long,
-    ),
-    r'totalCommits': PropertySchema(
-      id: 16,
-      name: r'totalCommits',
-      type: IsarType.long,
-    ),
-    r'weeklyTarget': PropertySchema(
-      id: 17,
-      name: r'weeklyTarget',
+    r'totalCompletions': PropertySchema(
+      id: 11,
+      name: r'totalCompletions',
       type: IsarType.long,
     )
   },
@@ -113,47 +84,7 @@ const ProtocolSchema = CollectionSchema(
   deserialize: _protocolDeserialize,
   deserializeProp: _protocolDeserializeProp,
   idName: r'id',
-  indexes: {
-    r'name': IndexSchema(
-      id: 879695947855722453,
-      name: r'name',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'name',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    ),
-    r'createdAt': IndexSchema(
-      id: -3433535483987302584,
-      name: r'createdAt',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'createdAt',
-          type: IndexType.value,
-          caseSensitive: false,
-        )
-      ],
-    ),
-    r'isActive': IndexSchema(
-      id: 8092228061260947457,
-      name: r'isActive',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'isActive',
-          type: IndexType.value,
-          caseSensitive: false,
-        )
-      ],
-    )
-  },
+  indexes: {},
   links: {},
   embeddedSchemas: {},
   getId: _protocolGetId,
@@ -168,33 +99,15 @@ int _protocolEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.colorTheme.length * 3;
-  {
-    final value = object.conditions;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.customColorHex;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.colorHex.length * 3;
+  bytesCount += 3 + object.daysOfWeek.length * 8;
   {
     final value = object.description;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
-  {
-    final value = object.failureRules;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  bytesCount += 3 + object.linkedTaskIds.length * 8;
-  bytesCount += 3 + object.name.length * 3;
+  bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
 
@@ -204,24 +117,18 @@ void _protocolSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.colorTheme);
-  writer.writeString(offsets[1], object.conditions);
-  writer.writeDateTime(offsets[2], object.createdAt);
-  writer.writeString(offsets[3], object.customColorHex);
-  writer.writeLong(offsets[4], object.daysRemaining);
-  writer.writeDateTime(offsets[5], object.deadline);
-  writer.writeString(offsets[6], object.description);
-  writer.writeLong(offsets[7], object.failedWeeks);
-  writer.writeString(offsets[8], object.failureRules);
-  writer.writeBool(offsets[9], object.isAchieved);
-  writer.writeBool(offsets[10], object.isActive);
-  writer.writeBool(offsets[11], object.isOverdue);
-  writer.writeLongList(offsets[12], object.linkedTaskIds);
-  writer.writeString(offsets[13], object.name);
-  writer.writeDouble(offsets[14], object.progressPercent);
-  writer.writeLong(offsets[15], object.successfulWeeks);
-  writer.writeLong(offsets[16], object.totalCommits);
-  writer.writeLong(offsets[17], object.weeklyTarget);
+  writer.writeString(offsets[0], object.colorHex);
+  writer.writeDateTime(offsets[1], object.createdAt);
+  writer.writeLong(offsets[2], object.currentStreak);
+  writer.writeLongList(offsets[3], object.daysOfWeek);
+  writer.writeString(offsets[4], object.description);
+  writer.writeByte(offsets[5], object.frequency.index);
+  writer.writeBool(offsets[6], object.isActive);
+  writer.writeDateTime(offsets[7], object.lastCompletedAt);
+  writer.writeLong(offsets[8], object.longestStreak);
+  writer.writeLong(offsets[9], object.reminderTime);
+  writer.writeString(offsets[10], object.title);
+  writer.writeLong(offsets[11], object.totalCompletions);
 }
 
 Protocol _protocolDeserialize(
@@ -230,23 +137,23 @@ Protocol _protocolDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Protocol();
-  object.colorTheme = reader.readString(offsets[0]);
-  object.conditions = reader.readStringOrNull(offsets[1]);
-  object.createdAt = reader.readDateTime(offsets[2]);
-  object.customColorHex = reader.readStringOrNull(offsets[3]);
-  object.deadline = reader.readDateTimeOrNull(offsets[5]);
-  object.description = reader.readStringOrNull(offsets[6]);
-  object.failedWeeks = reader.readLong(offsets[7]);
-  object.failureRules = reader.readStringOrNull(offsets[8]);
+  final object = Protocol(
+    colorHex: reader.readString(offsets[0]),
+    currentStreak: reader.readLongOrNull(offsets[2]) ?? 0,
+    daysOfWeek: reader.readLongList(offsets[3]) ?? const [],
+    description: reader.readStringOrNull(offsets[4]),
+    frequency:
+        _ProtocolfrequencyValueEnumMap[reader.readByteOrNull(offsets[5])] ??
+            ProtocolFrequency.daily,
+    isActive: reader.readBoolOrNull(offsets[6]) ?? true,
+    lastCompletedAt: reader.readDateTimeOrNull(offsets[7]),
+    longestStreak: reader.readLongOrNull(offsets[8]) ?? 0,
+    reminderTime: reader.readLongOrNull(offsets[9]),
+    title: reader.readString(offsets[10]),
+    totalCompletions: reader.readLongOrNull(offsets[11]) ?? 0,
+  );
+  object.createdAt = reader.readDateTime(offsets[1]);
   object.id = id;
-  object.isActive = reader.readBool(offsets[10]);
-  object.linkedTaskIds = reader.readLongList(offsets[12]) ?? [];
-  object.name = reader.readString(offsets[13]);
-  object.progressPercent = reader.readDouble(offsets[14]);
-  object.successfulWeeks = reader.readLong(offsets[15]);
-  object.totalCommits = reader.readLong(offsets[16]);
-  object.weeklyTarget = reader.readLong(offsets[17]);
   return object;
 }
 
@@ -260,43 +167,43 @@ P _protocolDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
-    case 2:
       return (reader.readDateTime(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongList(offset) ?? const []) as P;
     case 4:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (_ProtocolfrequencyValueEnumMap[reader.readByteOrNull(offset)] ??
+          ProtocolFrequency.daily) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? true) as P;
     case 7:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 9:
-      return (reader.readBool(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 10:
-      return (reader.readBool(offset)) as P;
-    case 11:
-      return (reader.readBool(offset)) as P;
-    case 12:
-      return (reader.readLongList(offset) ?? []) as P;
-    case 13:
       return (reader.readString(offset)) as P;
-    case 14:
-      return (reader.readDouble(offset)) as P;
-    case 15:
-      return (reader.readLong(offset)) as P;
-    case 16:
-      return (reader.readLong(offset)) as P;
-    case 17:
-      return (reader.readLong(offset)) as P;
+    case 11:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
+
+const _ProtocolfrequencyEnumValueMap = {
+  'daily': 0,
+  'weekly': 1,
+  'custom': 2,
+};
+const _ProtocolfrequencyValueEnumMap = {
+  0: ProtocolFrequency.daily,
+  1: ProtocolFrequency.weekly,
+  2: ProtocolFrequency.custom,
+};
 
 Id _protocolGetId(Protocol object) {
   return object.id;
@@ -314,22 +221,6 @@ extension ProtocolQueryWhereSort on QueryBuilder<Protocol, Protocol, QWhere> {
   QueryBuilder<Protocol, Protocol, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhere> anyCreatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'createdAt'),
-      );
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhere> anyIsActive() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'isActive'),
-      );
     });
   }
 }
@@ -399,203 +290,24 @@ extension ProtocolQueryWhere on QueryBuilder<Protocol, Protocol, QWhereClause> {
       ));
     });
   }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> nameEqualTo(String name) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'name',
-        value: [name],
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> nameNotEqualTo(
-      String name) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [],
-              upper: [name],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [name],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [name],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [],
-              upper: [name],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> createdAtEqualTo(
-      DateTime createdAt) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'createdAt',
-        value: [createdAt],
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> createdAtNotEqualTo(
-      DateTime createdAt) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [],
-              upper: [createdAt],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [createdAt],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [createdAt],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [],
-              upper: [createdAt],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> createdAtGreaterThan(
-    DateTime createdAt, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [createdAt],
-        includeLower: include,
-        upper: [],
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> createdAtLessThan(
-    DateTime createdAt, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [],
-        upper: [createdAt],
-        includeUpper: include,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> createdAtBetween(
-    DateTime lowerCreatedAt,
-    DateTime upperCreatedAt, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [lowerCreatedAt],
-        includeLower: includeLower,
-        upper: [upperCreatedAt],
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> isActiveEqualTo(
-      bool isActive) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'isActive',
-        value: [isActive],
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterWhereClause> isActiveNotEqualTo(
-      bool isActive) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'isActive',
-              lower: [],
-              upper: [isActive],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'isActive',
-              lower: [isActive],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'isActive',
-              lower: [isActive],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'isActive',
-              lower: [],
-              upper: [isActive],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
 }
 
 extension ProtocolQueryFilter
     on QueryBuilder<Protocol, Protocol, QFilterCondition> {
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeEqualTo(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'colorTheme',
+        property: r'colorHex',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeGreaterThan(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -603,14 +315,14 @@ extension ProtocolQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'colorTheme',
+        property: r'colorHex',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeLessThan(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -618,14 +330,14 @@ extension ProtocolQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'colorTheme',
+        property: r'colorHex',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeBetween(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -634,7 +346,7 @@ extension ProtocolQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'colorTheme',
+        property: r'colorHex',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -644,218 +356,69 @@ extension ProtocolQueryFilter
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeStartsWith(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'colorTheme',
+        property: r'colorHex',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeEndsWith(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'colorTheme',
+        property: r'colorHex',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeContains(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'colorTheme',
+        property: r'colorHex',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeMatches(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'colorTheme',
+        property: r'colorHex',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorThemeIsEmpty() {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'colorTheme',
+        property: r'colorHex',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      colorThemeIsNotEmpty() {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> colorHexIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'colorTheme',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'conditions',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      conditionsIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'conditions',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'conditions',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'conditions',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'conditions',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'conditions',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'conditions',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'conditions',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'conditions',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'conditions',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> conditionsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'conditions',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      conditionsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'conditions',
+        property: r'colorHex',
         value: '',
       ));
     });
@@ -914,223 +477,52 @@ extension ProtocolQueryFilter
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'customColorHex',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'customColorHex',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> customColorHexEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> currentStreakEqualTo(
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'customColorHex',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'customColorHex',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'customColorHex',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> customColorHexBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'customColorHex',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'customColorHex',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'customColorHex',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'customColorHex',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> customColorHexMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'customColorHex',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'customColorHex',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      customColorHexIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'customColorHex',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      daysRemainingIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'daysRemaining',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      daysRemainingIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'daysRemaining',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> daysRemainingEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'daysRemaining',
+        property: r'currentStreak',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      daysRemainingGreaterThan(
-    int? value, {
+      currentStreakGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'daysRemaining',
+        property: r'currentStreak',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> daysRemainingLessThan(
-    int? value, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> currentStreakLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'daysRemaining',
+        property: r'currentStreak',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> daysRemainingBetween(
-    int? lower,
-    int? upper, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> currentStreakBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'daysRemaining',
+        property: r'currentStreak',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1139,72 +531,147 @@ extension ProtocolQueryFilter
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> deadlineIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'deadline',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> deadlineIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'deadline',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> deadlineEqualTo(
-      DateTime? value) {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekElementEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'deadline',
+        property: r'daysOfWeek',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> deadlineGreaterThan(
-    DateTime? value, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekElementGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'deadline',
+        property: r'daysOfWeek',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> deadlineLessThan(
-    DateTime? value, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekElementLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'deadline',
+        property: r'daysOfWeek',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> deadlineBetween(
-    DateTime? lower,
-    DateTime? upper, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekElementBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'deadline',
+        property: r'daysOfWeek',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> daysOfWeekIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      daysOfWeekLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'daysOfWeek',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1357,207 +824,55 @@ extension ProtocolQueryFilter
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failedWeeksEqualTo(
-      int value) {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> frequencyEqualTo(
+      ProtocolFrequency value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'failedWeeks',
+        property: r'frequency',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      failedWeeksGreaterThan(
-    int value, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> frequencyGreaterThan(
+    ProtocolFrequency value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'failedWeeks',
+        property: r'frequency',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failedWeeksLessThan(
-    int value, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> frequencyLessThan(
+    ProtocolFrequency value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'failedWeeks',
+        property: r'frequency',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failedWeeksBetween(
-    int lower,
-    int upper, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> frequencyBetween(
+    ProtocolFrequency lower,
+    ProtocolFrequency upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'failedWeeks',
+        property: r'frequency',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failureRulesIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'failureRules',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      failureRulesIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'failureRules',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failureRulesEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'failureRules',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      failureRulesGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'failureRules',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failureRulesLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'failureRules',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failureRulesBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'failureRules',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      failureRulesStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'failureRules',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failureRulesEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'failureRules',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failureRulesContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'failureRules',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> failureRulesMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'failureRules',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      failureRulesIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'failureRules',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      failureRulesIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'failureRules',
-        value: '',
       ));
     });
   }
@@ -1614,16 +929,6 @@ extension ProtocolQueryFilter
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> isAchievedEqualTo(
-      bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isAchieved',
-        value: value,
-      ));
-    });
-  }
-
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition> isActiveEqualTo(
       bool value) {
     return QueryBuilder.apply(this, (query) {
@@ -1634,64 +939,72 @@ extension ProtocolQueryFilter
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> isOverdueEqualTo(
-      bool value) {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      lastCompletedAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastCompletedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      lastCompletedAtIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastCompletedAt',
+      ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      lastCompletedAtEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isOverdue',
+        property: r'lastCompletedAt',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsElementEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'linkedTaskIds',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsElementGreaterThan(
-    int value, {
+      lastCompletedAtGreaterThan(
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'linkedTaskIds',
+        property: r'lastCompletedAt',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsElementLessThan(
-    int value, {
+      lastCompletedAtLessThan(
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'linkedTaskIds',
+        property: r'lastCompletedAt',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsElementBetween(
-    int lower,
-    int upper, {
+      lastCompletedAtBetween(
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'linkedTaskIds',
+        property: r'lastCompletedAt',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1700,109 +1013,145 @@ extension ProtocolQueryFilter
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsLengthEqualTo(int length) {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> longestStreakEqualTo(
+      int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'linkedTaskIds',
-        length,
-        true,
-        length,
-        true,
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'longestStreak',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'linkedTaskIds',
-        0,
-        true,
-        0,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'linkedTaskIds',
-        0,
-        false,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsLengthLessThan(
-    int length, {
+      longestStreakGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'linkedTaskIds',
-        0,
-        true,
-        length,
-        include,
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'longestStreak',
+        value: value,
+      ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsLengthGreaterThan(
-    int length, {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> longestStreakLessThan(
+    int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'linkedTaskIds',
-        length,
-        include,
-        999999,
-        true,
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'longestStreak',
+        value: value,
+      ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      linkedTaskIdsLengthBetween(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> longestStreakBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'linkedTaskIds',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'longestStreak',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> reminderTimeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'reminderTime',
+      ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      reminderTimeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'reminderTime',
+      ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> reminderTimeEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'reminderTime',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
+      reminderTimeGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'reminderTime',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> reminderTimeLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'reminderTime',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> reminderTimeBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'reminderTime',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameGreaterThan(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1810,14 +1159,14 @@ extension ProtocolQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1825,14 +1174,14 @@ extension ProtocolQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameBetween(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1841,7 +1190,7 @@ extension ProtocolQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'name',
+        property: r'title',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1851,180 +1200,114 @@ extension ProtocolQueryFilter
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameStartsWith(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameContains(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'name',
+        property: r'title',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameMatches(
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'name',
+        property: r'title',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameIsEmpty() {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
+        property: r'title',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> nameIsNotEmpty() {
+  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> titleIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'name',
+        property: r'title',
         value: '',
       ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      progressPercentEqualTo(
-    double value, {
-    double epsilon = Query.epsilon,
-  }) {
+      totalCompletionsEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'progressPercent',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      progressPercentGreaterThan(
-    double value, {
-    bool include = false,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'progressPercent',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      progressPercentLessThan(
-    double value, {
-    bool include = false,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'progressPercent',
-        value: value,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      progressPercentBetween(
-    double lower,
-    double upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    double epsilon = Query.epsilon,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'progressPercent',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        epsilon: epsilon,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      successfulWeeksEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'successfulWeeks',
+        property: r'totalCompletions',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      successfulWeeksGreaterThan(
+      totalCompletionsGreaterThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'successfulWeeks',
+        property: r'totalCompletions',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      successfulWeeksLessThan(
+      totalCompletionsLessThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'successfulWeeks',
+        property: r'totalCompletions',
         value: value,
       ));
     });
   }
 
   QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      successfulWeeksBetween(
+      totalCompletionsBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -2032,115 +1315,7 @@ extension ProtocolQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'successfulWeeks',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> totalCommitsEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'totalCommits',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      totalCommitsGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'totalCommits',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> totalCommitsLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'totalCommits',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> totalCommitsBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'totalCommits',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> weeklyTargetEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'weeklyTarget',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition>
-      weeklyTargetGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'weeklyTarget',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> weeklyTargetLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'weeklyTarget',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterFilterCondition> weeklyTargetBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'weeklyTarget',
+        property: r'totalCompletions',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -2157,27 +1332,15 @@ extension ProtocolQueryLinks
     on QueryBuilder<Protocol, Protocol, QFilterCondition> {}
 
 extension ProtocolQuerySortBy on QueryBuilder<Protocol, Protocol, QSortBy> {
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByColorTheme() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByColorHex() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'colorTheme', Sort.asc);
+      return query.addSortBy(r'colorHex', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByColorThemeDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByColorHexDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'colorTheme', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByConditions() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'conditions', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByConditionsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'conditions', Sort.desc);
+      return query.addSortBy(r'colorHex', Sort.desc);
     });
   }
 
@@ -2193,39 +1356,15 @@ extension ProtocolQuerySortBy on QueryBuilder<Protocol, Protocol, QSortBy> {
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByCustomColorHex() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByCurrentStreak() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'customColorHex', Sort.asc);
+      return query.addSortBy(r'currentStreak', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByCustomColorHexDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByCurrentStreakDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'customColorHex', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByDaysRemaining() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'daysRemaining', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByDaysRemainingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'daysRemaining', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByDeadline() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'deadline', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByDeadlineDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'deadline', Sort.desc);
+      return query.addSortBy(r'currentStreak', Sort.desc);
     });
   }
 
@@ -2241,39 +1380,15 @@ extension ProtocolQuerySortBy on QueryBuilder<Protocol, Protocol, QSortBy> {
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByFailedWeeks() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByFrequency() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'failedWeeks', Sort.asc);
+      return query.addSortBy(r'frequency', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByFailedWeeksDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByFrequencyDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'failedWeeks', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByFailureRules() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'failureRules', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByFailureRulesDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'failureRules', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByIsAchieved() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isAchieved', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByIsAchievedDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isAchieved', Sort.desc);
+      return query.addSortBy(r'frequency', Sort.desc);
     });
   }
 
@@ -2289,102 +1404,78 @@ extension ProtocolQuerySortBy on QueryBuilder<Protocol, Protocol, QSortBy> {
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByIsOverdue() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByLastCompletedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isOverdue', Sort.asc);
+      return query.addSortBy(r'lastCompletedAt', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByIsOverdueDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByLastCompletedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isOverdue', Sort.desc);
+      return query.addSortBy(r'lastCompletedAt', Sort.desc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByName() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByLongestStreak() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.asc);
+      return query.addSortBy(r'longestStreak', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByLongestStreakDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.desc);
+      return query.addSortBy(r'longestStreak', Sort.desc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByProgressPercent() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByReminderTime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'progressPercent', Sort.asc);
+      return query.addSortBy(r'reminderTime', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByProgressPercentDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByReminderTimeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'progressPercent', Sort.desc);
+      return query.addSortBy(r'reminderTime', Sort.desc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortBySuccessfulWeeks() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'successfulWeeks', Sort.asc);
+      return query.addSortBy(r'title', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortBySuccessfulWeeksDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByTitleDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'successfulWeeks', Sort.desc);
+      return query.addSortBy(r'title', Sort.desc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByTotalCommits() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByTotalCompletions() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'totalCommits', Sort.asc);
+      return query.addSortBy(r'totalCompletions', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByTotalCommitsDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByTotalCompletionsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'totalCommits', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByWeeklyTarget() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'weeklyTarget', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> sortByWeeklyTargetDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'weeklyTarget', Sort.desc);
+      return query.addSortBy(r'totalCompletions', Sort.desc);
     });
   }
 }
 
 extension ProtocolQuerySortThenBy
     on QueryBuilder<Protocol, Protocol, QSortThenBy> {
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByColorTheme() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByColorHex() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'colorTheme', Sort.asc);
+      return query.addSortBy(r'colorHex', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByColorThemeDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByColorHexDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'colorTheme', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByConditions() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'conditions', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByConditionsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'conditions', Sort.desc);
+      return query.addSortBy(r'colorHex', Sort.desc);
     });
   }
 
@@ -2400,39 +1491,15 @@ extension ProtocolQuerySortThenBy
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByCustomColorHex() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByCurrentStreak() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'customColorHex', Sort.asc);
+      return query.addSortBy(r'currentStreak', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByCustomColorHexDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByCurrentStreakDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'customColorHex', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByDaysRemaining() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'daysRemaining', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByDaysRemainingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'daysRemaining', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByDeadline() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'deadline', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByDeadlineDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'deadline', Sort.desc);
+      return query.addSortBy(r'currentStreak', Sort.desc);
     });
   }
 
@@ -2448,27 +1515,15 @@ extension ProtocolQuerySortThenBy
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByFailedWeeks() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByFrequency() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'failedWeeks', Sort.asc);
+      return query.addSortBy(r'frequency', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByFailedWeeksDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByFrequencyDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'failedWeeks', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByFailureRules() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'failureRules', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByFailureRulesDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'failureRules', Sort.desc);
+      return query.addSortBy(r'frequency', Sort.desc);
     });
   }
 
@@ -2484,18 +1539,6 @@ extension ProtocolQuerySortThenBy
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByIsAchieved() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isAchieved', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByIsAchievedDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isAchieved', Sort.desc);
-    });
-  }
-
   QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByIsActive() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.asc);
@@ -2508,92 +1551,73 @@ extension ProtocolQuerySortThenBy
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByIsOverdue() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByLastCompletedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isOverdue', Sort.asc);
+      return query.addSortBy(r'lastCompletedAt', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByIsOverdueDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByLastCompletedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isOverdue', Sort.desc);
+      return query.addSortBy(r'lastCompletedAt', Sort.desc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByName() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByLongestStreak() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.asc);
+      return query.addSortBy(r'longestStreak', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByLongestStreakDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'name', Sort.desc);
+      return query.addSortBy(r'longestStreak', Sort.desc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByProgressPercent() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByReminderTime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'progressPercent', Sort.asc);
+      return query.addSortBy(r'reminderTime', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByProgressPercentDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByReminderTimeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'progressPercent', Sort.desc);
+      return query.addSortBy(r'reminderTime', Sort.desc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenBySuccessfulWeeks() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'successfulWeeks', Sort.asc);
+      return query.addSortBy(r'title', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenBySuccessfulWeeksDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByTitleDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'successfulWeeks', Sort.desc);
+      return query.addSortBy(r'title', Sort.desc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByTotalCommits() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByTotalCompletions() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'totalCommits', Sort.asc);
+      return query.addSortBy(r'totalCompletions', Sort.asc);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByTotalCommitsDesc() {
+  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByTotalCompletionsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'totalCommits', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByWeeklyTarget() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'weeklyTarget', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QAfterSortBy> thenByWeeklyTargetDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'weeklyTarget', Sort.desc);
+      return query.addSortBy(r'totalCompletions', Sort.desc);
     });
   }
 }
 
 extension ProtocolQueryWhereDistinct
     on QueryBuilder<Protocol, Protocol, QDistinct> {
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByColorTheme(
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByColorHex(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'colorTheme', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByConditions(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'conditions', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'colorHex', caseSensitive: caseSensitive);
     });
   }
 
@@ -2603,23 +1627,15 @@ extension ProtocolQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByCustomColorHex(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByCurrentStreak() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'customColorHex',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'currentStreak');
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByDaysRemaining() {
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByDaysOfWeek() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'daysRemaining');
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByDeadline() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'deadline');
+      return query.addDistinctBy(r'daysOfWeek');
     });
   }
 
@@ -2630,22 +1646,9 @@ extension ProtocolQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByFailedWeeks() {
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByFrequency() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'failedWeeks');
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByFailureRules(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'failureRules', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByIsAchieved() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isAchieved');
+      return query.addDistinctBy(r'frequency');
     });
   }
 
@@ -2655,46 +1658,34 @@ extension ProtocolQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByIsOverdue() {
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByLastCompletedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isOverdue');
+      return query.addDistinctBy(r'lastCompletedAt');
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByLinkedTaskIds() {
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByLongestStreak() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'linkedTaskIds');
+      return query.addDistinctBy(r'longestStreak');
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByName(
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByReminderTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'reminderTime');
+    });
+  }
+
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByProgressPercent() {
+  QueryBuilder<Protocol, Protocol, QDistinct> distinctByTotalCompletions() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'progressPercent');
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctBySuccessfulWeeks() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'successfulWeeks');
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByTotalCommits() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'totalCommits');
-    });
-  }
-
-  QueryBuilder<Protocol, Protocol, QDistinct> distinctByWeeklyTarget() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'weeklyTarget');
+      return query.addDistinctBy(r'totalCompletions');
     });
   }
 }
@@ -2707,15 +1698,9 @@ extension ProtocolQueryProperty
     });
   }
 
-  QueryBuilder<Protocol, String, QQueryOperations> colorThemeProperty() {
+  QueryBuilder<Protocol, String, QQueryOperations> colorHexProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'colorTheme');
-    });
-  }
-
-  QueryBuilder<Protocol, String?, QQueryOperations> conditionsProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'conditions');
+      return query.addPropertyName(r'colorHex');
     });
   }
 
@@ -2725,21 +1710,15 @@ extension ProtocolQueryProperty
     });
   }
 
-  QueryBuilder<Protocol, String?, QQueryOperations> customColorHexProperty() {
+  QueryBuilder<Protocol, int, QQueryOperations> currentStreakProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'customColorHex');
+      return query.addPropertyName(r'currentStreak');
     });
   }
 
-  QueryBuilder<Protocol, int?, QQueryOperations> daysRemainingProperty() {
+  QueryBuilder<Protocol, List<int>, QQueryOperations> daysOfWeekProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'daysRemaining');
-    });
-  }
-
-  QueryBuilder<Protocol, DateTime?, QQueryOperations> deadlineProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'deadline');
+      return query.addPropertyName(r'daysOfWeek');
     });
   }
 
@@ -2749,21 +1728,10 @@ extension ProtocolQueryProperty
     });
   }
 
-  QueryBuilder<Protocol, int, QQueryOperations> failedWeeksProperty() {
+  QueryBuilder<Protocol, ProtocolFrequency, QQueryOperations>
+      frequencyProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'failedWeeks');
-    });
-  }
-
-  QueryBuilder<Protocol, String?, QQueryOperations> failureRulesProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'failureRules');
-    });
-  }
-
-  QueryBuilder<Protocol, bool, QQueryOperations> isAchievedProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isAchieved');
+      return query.addPropertyName(r'frequency');
     });
   }
 
@@ -2773,45 +1741,34 @@ extension ProtocolQueryProperty
     });
   }
 
-  QueryBuilder<Protocol, bool, QQueryOperations> isOverdueProperty() {
+  QueryBuilder<Protocol, DateTime?, QQueryOperations>
+      lastCompletedAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isOverdue');
+      return query.addPropertyName(r'lastCompletedAt');
     });
   }
 
-  QueryBuilder<Protocol, List<int>, QQueryOperations> linkedTaskIdsProperty() {
+  QueryBuilder<Protocol, int, QQueryOperations> longestStreakProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'linkedTaskIds');
+      return query.addPropertyName(r'longestStreak');
     });
   }
 
-  QueryBuilder<Protocol, String, QQueryOperations> nameProperty() {
+  QueryBuilder<Protocol, int?, QQueryOperations> reminderTimeProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'name');
+      return query.addPropertyName(r'reminderTime');
     });
   }
 
-  QueryBuilder<Protocol, double, QQueryOperations> progressPercentProperty() {
+  QueryBuilder<Protocol, String, QQueryOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'progressPercent');
+      return query.addPropertyName(r'title');
     });
   }
 
-  QueryBuilder<Protocol, int, QQueryOperations> successfulWeeksProperty() {
+  QueryBuilder<Protocol, int, QQueryOperations> totalCompletionsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'successfulWeeks');
-    });
-  }
-
-  QueryBuilder<Protocol, int, QQueryOperations> totalCommitsProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'totalCommits');
-    });
-  }
-
-  QueryBuilder<Protocol, int, QQueryOperations> weeklyTargetProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'weeklyTarget');
+      return query.addPropertyName(r'totalCompletions');
     });
   }
 }

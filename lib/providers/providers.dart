@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/data_export_service.dart';
+import '../services/ai_service.dart';
 import '../data/database/isar_database.dart';
 import '../data/repositories/task_repository.dart';
 import '../data/repositories/commit_repository.dart';
@@ -6,6 +8,7 @@ import '../data/repositories/protocol_repository.dart';
 import '../data/models/task.dart';
 import '../data/models/commit.dart';
 import '../data/models/protocol.dart';
+import '../data/models/insights.dart';
 
 // ============================================================================
 // Database Provider
@@ -43,6 +46,12 @@ final protocolRepositoryProvider = Provider<ProtocolRepository>((ref) {
 /// Stream of all active tasks
 final activeTasksProvider = StreamProvider<List<Task>>((ref) {
   final repo = ref.watch(taskRepositoryProvider);
+  return repo.watchAllActive();
+});
+
+/// Stream of all active protocols
+final activeProtocolsProvider = StreamProvider<List<Protocol>>((ref) {
+  final repo = ref.watch(protocolRepositoryProvider);
   return repo.watchAllActive();
 });
 
@@ -131,25 +140,12 @@ final totalCommitCountProvider = StreamProvider<int>((ref) {
 // ============================================================================
 
 /// Stream of active protocols
-final activeProtocolsProvider = StreamProvider<List<Protocol>>((ref) {
-  final repo = ref.watch(protocolRepositoryProvider);
-  return repo.watchActive();
-});
+// ============================================================================
+// Protocol Providers
+// ============================================================================
 
 /// Currently selected protocol
 final selectedProtocolProvider = StateProvider<Protocol?>((ref) => null);
-
-/// Protocols expiring soon (within 7 days)
-final expiringSoonProtocolsProvider = FutureProvider<List<Protocol>>((ref) {
-  final repo = ref.watch(protocolRepositoryProvider);
-  return repo.getExpiringSoon(days: 7);
-});
-
-/// Overdue protocols
-final overdueProtocolsProvider = FutureProvider<List<Protocol>>((ref) {
-  final repo = ref.watch(protocolRepositoryProvider);
-  return repo.getOverdue();
-});
 
 // ============================================================================
 // UI State Providers
@@ -220,3 +216,35 @@ class TaskHeatmapData {
     required this.totalCommits,
   });
 }
+
+// ============================================================================
+// Insights Providers
+// ============================================================================
+
+/// Weekly activity chart data
+final weeklyActivityProvider = StreamProvider<List<WeeklyActivity>>((ref) {
+  final repo = ref.watch(commitRepositoryProvider);
+  return repo.watchWeeklyActivity();
+});
+
+/// Insight patterns data
+final insightPatternsProvider = StreamProvider<InsightPatterns>((ref) {
+  final repo = ref.watch(commitRepositoryProvider);
+  return repo.watchInsightPatterns();
+});
+
+/// Data Export Service provider
+final dataExportServiceProvider = Provider<DataExportService>((ref) {
+  return DataExportService(
+    taskRepo: ref.watch(taskRepositoryProvider),
+    commitRepo: ref.watch(commitRepositoryProvider),
+    protocolRepo: ref.watch(protocolRepositoryProvider),
+  );
+});
+
+/// AI Service provider
+final aiServiceProvider = Provider<AIService>((ref) {
+  return AIService(
+    taskRepository: ref.watch(taskRepositoryProvider),
+  );
+});

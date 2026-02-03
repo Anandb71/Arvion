@@ -9,6 +9,10 @@ import 'widgets/command_palette.dart';
 import 'features/dashboard/dashboard_screen.dart';
 import 'features/tasks/tasks_screen.dart';
 import 'features/settings/settings_screen.dart';
+import 'features/insights/insights_screen.dart';
+import 'features/protocols/protocols_screen.dart';
+import 'features/ai/ai_panel.dart';
+import 'data/database/isar_database.dart';
 
 /// Main Arvion application
 class ArvionApp extends StatelessWidget {
@@ -58,6 +62,11 @@ class _AppShellState extends ConsumerState<AppShell> {
       selectedIcon: Icons.insights,
     ),
     NavItem(
+      label: 'Assistant',
+      icon: Icons.auto_awesome_outlined,
+      selectedIcon: Icons.auto_awesome,
+    ),
+    NavItem(
       label: 'Settings',
       icon: Icons.settings_outlined,
       selectedIcon: Icons.settings,
@@ -82,6 +91,13 @@ class _AppShellState extends ConsumerState<AppShell> {
       onSelect: () {},
     ),
     CommandItem(
+      id: 'ask_ai',
+      title: 'Ask Assistant',
+      subtitle: 'Get help or plan tasks',
+      icon: Icons.auto_awesome,
+      onSelect: () => ref.read(navigationIndexProvider.notifier).state = 4,
+    ),
+    CommandItem(
       id: 'goto_dashboard',
       title: 'Go to Dashboard',
       icon: Icons.grid_view,
@@ -89,21 +105,20 @@ class _AppShellState extends ConsumerState<AppShell> {
     ),
     CommandItem(
       id: 'goto_tasks',
-      title: 'Go to Tasks',
       icon: Icons.task_alt,
+      title: 'Go to Tasks',
       onSelect: () => ref.read(navigationIndexProvider.notifier).state = 1,
     ),
     CommandItem(
       id: 'goto_settings',
       title: 'Go to Settings',
       icon: Icons.settings,
-      onSelect: () => ref.read(navigationIndexProvider.notifier).state = 4,
+      onSelect: () => ref.read(navigationIndexProvider.notifier).state = 5,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final selectedIndex = ref.watch(navigationIndexProvider);
     final dbInitialized = ref.watch(databaseInitializedProvider);
 
     return dbInitialized.when(
@@ -124,7 +139,7 @@ class _AppShellState extends ConsumerState<AppShell> {
                   children: [
                     // Navigation rail
                     NavRail(
-                      selectedIndex: selectedIndex,
+                      selectedIndex: ref.watch(navigationIndexProvider),
                       onDestinationSelected: (index) {
                         ref.read(navigationIndexProvider.notifier).state = index;
                       },
@@ -134,20 +149,22 @@ class _AppShellState extends ConsumerState<AppShell> {
                     Expanded(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
-                        child: _buildScreen(selectedIndex),
+                        child: _buildScreen(ref.watch(navigationIndexProvider)),
                       ),
                     ),
                   ],
                 ),
                 // Command palette overlay
                 if (_showCommandPalette)
-                  GestureDetector(
-                    onTap: () => setState(() => _showCommandPalette = false),
-                    child: Container(
-                      color: Colors.black54,
-                      child: CommandPalette(
-                        commands: _commands,
-                        onClose: () => setState(() => _showCommandPalette = false),
+                  Positioned.fill(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _showCommandPalette = false),
+                      child: Container(
+                        color: Colors.black54,
+                        child: CommandPalette(
+                          commands: _commands,
+                          onClose: () => setState(() => _showCommandPalette = false),
+                        ),
                       ),
                     ),
                   ),
@@ -156,22 +173,7 @@ class _AppShellState extends ConsumerState<AppShell> {
           ),
         ),
       ),
-      loading: () => const Scaffold(
-        backgroundColor: ArvionColors.background,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(color: ArvionColors.primary),
-              SizedBox(height: 16),
-              Text(
-                'Loading Arvion...',
-                style: TextStyle(color: ArvionColors.textSecondary),
-              ),
-            ],
-          ),
-        ),
-      ),
+      loading: () => _buildLoading(),
       error: (e, _) => Scaffold(
         backgroundColor: ArvionColors.background,
         body: Center(
@@ -184,6 +186,25 @@ class _AppShellState extends ConsumerState<AppShell> {
     );
   }
 
+  Widget _buildLoading() {
+    return const Scaffold(
+      backgroundColor: ArvionColors.background,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(color: ArvionColors.primary),
+            SizedBox(height: 16),
+            Text(
+              'Loading Arvion...',
+              style: TextStyle(color: ArvionColors.textSecondary),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildScreen(int index) {
     switch (index) {
       case 0:
@@ -191,10 +212,12 @@ class _AppShellState extends ConsumerState<AppShell> {
       case 1:
         return const TasksScreen();
       case 2:
-        return _buildPlaceholder('Protocols', Icons.flag);
+        return const ProtocolsScreen();
       case 3:
-        return _buildPlaceholder('Insights', Icons.insights);
+        return const InsightsScreen();
       case 4:
+        return const AIPanel();
+      case 5:
         return const SettingsScreen();
       default:
         return const DashboardScreen();

@@ -5,152 +5,73 @@ import '../database/isar_database.dart';
 /// Repository for Protocol operations
 class ProtocolRepository {
   Isar get _isar => IsarDatabase.instance;
-  IsarCollection<Protocol> get _protocols => _isar.protocols;
+
+  /// Get all active protocols
+  Future<List<Protocol>> getAllActive() async {
+    return _isar.protocols.filter().isActiveEqualTo(true).findAll();
+  }
+
+  /// Get all protocols (active and inactive)
+  Future<List<Protocol>> getAll() async {
+    return _isar.protocols.where().findAll();
+  }
 
   /// Watch all active protocols
-  Stream<List<Protocol>> watchActive() {
-    return _protocols
+  Stream<List<Protocol>> watchAllActive() {
+    return _isar.protocols
         .filter()
         .isActiveEqualTo(true)
-        .sortByCreatedAtDesc()
         .watch(fireImmediately: true);
   }
 
-  /// Watch all protocols
-  Stream<List<Protocol>> watchAll() {
-    return _protocols.where().sortByCreatedAtDesc().watch(fireImmediately: true);
+  /// Add or update a protocol
+  Future<int> save(Protocol protocol) async {
+    return _isar.writeTxn(() => _isar.protocols.put(protocol));
   }
 
-  /// Get all active protocols
-  Future<List<Protocol>> getAllActive() {
-    return _protocols
-        .filter()
-        .isActiveEqualTo(true)
-        .sortByCreatedAtDesc()
-        .findAll();
+  /// Delete a protocol (soft delete usually, but here physical delete for MVP)
+  Future<bool> delete(int id) async {
+    return _isar.writeTxn(() => _isar.protocols.delete(id));
   }
 
-  /// Get protocol by ID
-  Future<Protocol?> getById(int id) {
-    return _protocols.get(id);
-  }
-
-  /// Get protocols by task ID
-  Future<List<Protocol>> getByTaskId(int taskId) {
-    return _protocols
-        .filter()
-        .linkedTaskIdsElementEqualTo(taskId)
-        .isActiveEqualTo(true)
-        .findAll();
-  }
-
-  /// Search protocols by name
-  Future<List<Protocol>> searchByName(String query) {
-    return _protocols
-        .filter()
-        .nameContains(query, caseSensitive: false)
-        .findAll();
-  }
-
-  /// Create a new protocol
-  Future<int> create(Protocol protocol) {
-    return _isar.writeTxn(() => _protocols.put(protocol));
-  }
-
-  /// Update a protocol
-  Future<int> update(Protocol protocol) {
-    return _isar.writeTxn(() => _protocols.put(protocol));
-  }
-
-  /// Deactivate a protocol
-  Future<void> deactivate(int id) async {
+  /// Toggle completion (update stats)
+  Future<void> complete(int id) async {
     await _isar.writeTxn(() async {
-      final protocol = await _protocols.get(id);
+      final protocol = await _isar.protocols.get(id);
       if (protocol != null) {
-        protocol.isActive = false;
-        await _protocols.put(protocol);
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        
+        // specific logic for completion could be added here
+        // For MVP, we just mark updated time and increment completions
+        
+        // Handle streak logic (simplified)
+        if (protocol.lastCompletedAt != null) {
+          final last = protocol.lastCompletedAt!;
+          final diff = today.difference(DateTime(last.year, last.month, last.day)).inDays;
+          
+          if (diff == 1) {
+            protocol.currentStreak++;
+          } else if (diff > 1) {
+            // Streak broken
+            protocol.currentStreak = 1;
+          } else {
+             // Already completed today
+             return;
+          }
+        } else {
+          protocol.currentStreak = 1;
+        }
+        
+        if (protocol.currentStreak > protocol.longestStreak) {
+          protocol.longestStreak = protocol.currentStreak;
+        }
+        
+        protocol.totalCompletions++;
+        protocol.lastCompletedAt = now;
+        
+        await _isar.protocols.put(protocol);
       }
     });
-  }
-
-  /// Activate a protocol
-  Future<void> activate(int id) async {
-    await _isar.writeTxn(() async {
-      final protocol = await _protocols.get(id);
-      if (protocol != null) {
-        protocol.isActive = true;
-        await _protocols.put(protocol);
-      }
-    });
-  }
-
-  /// Delete a protocol
-  Future<bool> delete(int id) {
-    return _isar.writeTxn(() => _protocols.delete(id));
-  }
-
-  /// Update protocol progress
-  Future<void> updateProgress(int id, double progress) async {
-    await _isar.writeTxn(() async {
-      final protocol = await _protocols.get(id);
-      if (protocol != null) {
-        protocol.progressPercent = progress.clamp(0, 100);
-        await _protocols.put(protocol);
-      }
-    });
-  }
-
-  /// Increment protocol commits
-  Future<void> incrementCommits(int id) async {
-    await _isar.writeTxn(() async {
-      final protocol = await _protocols.get(id);
-      if (protocol != null) {
-        protocol.totalCommits++;
-        await _protocols.put(protocol);
-      }
-    });
-  }
-
-  /// Record a successful week
-  Future<void> recordSuccessfulWeek(int id) async {
-    await _isar.writeTxn(() async {
-      final protocol = await _protocols.get(id);
-      if (protocol != null) {
-        protocol.successfulWeeks++;
-        await _protocols.put(protocol);
-      }
-    });
-  }
-
-  /// Record a failed week
-  Future<void> recordFailedWeek(int id) async {
-    await _isar.writeTxn(() async {
-      final protocol = await _protocols.get(id);
-      if (protocol != null) {
-        protocol.failedWeeks++;
-        await _protocols.put(protocol);
-      }
-    });
-  }
-
-  /// Get overdue protocols
-  Future<List<Protocol>> getOverdue() {
-    final now = DateTime.now();
-    return _protocols
-        .filter()
-        .isActiveEqualTo(true)
-        .deadlineLessThan(now)
-        .findAll();
-  }
-
-  /// Get protocols expiring soon (within N days)
-  Future<List<Protocol>> getExpiringSoon({int days = 7}) {
-    final now = DateTime.now();
-    final deadline = now.add(Duration(days: days));
-    return _protocols
-        .filter()
-        .isActiveEqualTo(true)
-        .deadlineBetween(now, deadline)
-        .findAll();
   }
 }
