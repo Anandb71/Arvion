@@ -47,6 +47,57 @@ class AIService {
     ],
   );
 
+  /// Define the 'list_tasks' tool
+  static final _listTasksTool = Tool(
+    functionDeclarations: [
+      FunctionDeclaration(
+        'list_tasks',
+        'Lists all active tasks with their IDs and details.',
+        Schema(
+          SchemaType.object,
+          properties: {}, // No arguments needed
+        ),
+      ),
+    ],
+  );
+
+  /// Define the 'update_task' tool
+  static final _updateTaskTool = Tool(
+    functionDeclarations: [
+      FunctionDeclaration(
+        'update_task',
+        'Updates an existing task.',
+        Schema(
+          SchemaType.object,
+          properties: {
+            'id': Schema(SchemaType.integer, description: 'ID of the task to update'),
+            'title': Schema(SchemaType.string, description: 'New title'),
+            'isArchived': Schema(SchemaType.boolean, description: 'Set to true to archive/complete'),
+            'difficulty': Schema(SchemaType.integer, description: 'New difficulty level'),
+          },
+          requiredProperties: ['id'],
+        ),
+      ),
+    ],
+  );
+
+  /// Define the 'delete_task' tool
+  static final _deleteTaskTool = Tool(
+    functionDeclarations: [
+      FunctionDeclaration(
+        'delete_task',
+        'Permanently deletes a task.',
+        Schema(
+          SchemaType.object,
+          properties: {
+            'id': Schema(SchemaType.integer, description: 'ID of the task to delete'),
+          },
+          requiredProperties: ['id'],
+        ),
+      ),
+    ],
+  );
+
   /// Stream message from Gemini
   Stream<String> sendMessageStream(String userMessage) async* {
     final apiKey = await _storage.read(key: _apiKeyKey);
@@ -66,10 +117,15 @@ class AIService {
       final model = GenerativeModel(
         model: modelName,
         apiKey: apiKey,
-        tools: [_createTaskTool],
+        tools: [
+          _createTaskTool,
+          _listTasksTool,
+          _updateTaskTool,
+          _deleteTaskTool,
+        ],
         generationConfig: GenerationConfig(
           temperature: 0.7,
-          maxOutputTokens: 512,
+          maxOutputTokens: 2048, // Increased for list tasks
           stopSequences: ['**User', 'User:'],
         ),
       );
@@ -84,19 +140,32 @@ class AIService {
       // Handle function calls loop (supports sequential calls)
       while (response.functionCalls.isNotEmpty) {
         final functionCall = response.functionCalls.first;
+        Map<String, Object?> result;
         
-        if (functionCall.name == 'create_task') {
-          // 1. Notify UI (optional streaming update)
-          yield "🛠️ Creating task: ${functionCall.args['title']}...";
-
-          // 2. Execute Action
-          final result = await _performCreateTask(functionCall.args);
-
-          // 3. Send result back to model
-          response = await chat.sendMessage(
-            Content.functionResponse(functionCall.name, result),
-          );
+        try {
+          if (functionCall.name == 'create_task') {
+             yield "🛠️ Creating task: ${functionCall.args['title']}...";
+             result = await _performCreateTask(functionCall.args);
+          } else if (functionCall.name == 'list_tasks') {
+             yield "📋 Reading tasks...";
+             result = await _performListTasks();
+          } else if (functionCall.name == 'update_task') {
+             yield "✏️ Updating task ${functionCall.args['id']}...";
+             result = await _performUpdateTask(functionCall.args);
+          } else if (functionCall.name == 'delete_task') {
+             yield "🗑️ Deleting task ${functionCall.args['id']}...";
+             result = await _performDeleteTask(functionCall.args);
+          } else {
+             result = {'error': 'Unknown function ${functionCall.name}'};
+          }
+        } catch (e) {
+          result = {'error': e.toString()};
         }
+
+        // Send result back to model
+        response = await chat.sendMessage(
+          Content.functionResponse(functionCall.name, result),
+        );
       }
 
       // Yield final text response
@@ -133,13 +202,70 @@ class AIService {
     }
   }
 
+  /// Helper to list tasks
+  Future<Map<String, Object?>> _performListTasks() async {
+    try {
+      final tasks = await taskRepository.getAllActive();
+      // Only send minimal info to save context
+      final tasksData = tasks.map((t) => {
+        'id': t.id,
+        'title': t.title,
+        'difficulty': t.difficulty,
+        'streak': t.currentStreak,
+      }).toList();
+      return {'status': 'success', 'tasks': tasksData, 'count': tasksData.length};
+    } catch (e) {
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  /// Helper to update tasks
+  Future<Map<String, Object?>> _performUpdateTask(Map<String, Object?> args) async {
+    try {
+      // Cast safely since args comes from JSON
+      final idRaw = args['id'];
+      if (idRaw == null) return {'status': 'error', 'message': 'Task ID required'};
+      final id = idRaw is int ? idRaw : int.parse(idRaw.toString());
+
+      final task = await taskRepository.getById(id);
+      if (task == null) return {'status': 'error', 'message': 'Task not found'};
+
+      if (args.containsKey('title')) task.title = args['title'] as String;
+      if (args.containsKey('difficulty')) task.difficulty = (args['difficulty'] as int);
+      if (args.containsKey('isArchived')) task.isArchived = args['isArchived'] as bool;
+      
+      await taskRepository.update(task);
+      return {'status': 'success', 'message': 'Task updated'};
+    } catch (e) {
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  /// Helper to delete tasks
+  Future<Map<String, Object?>> _performDeleteTask(Map<String, Object?> args) async {
+    try {
+      final idRaw = args['id'];
+      if (idRaw == null) return {'status': 'error', 'message': 'Task ID required'};
+      final id = idRaw is int ? idRaw : int.parse(idRaw.toString());
+
+      final success = await taskRepository.delete(id);
+      return {'status': success ? 'success' : 'error', 'message': success ? 'Task deleted' : 'Delete failed'};
+    } catch (e) {
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
   String _buildSystemPrompt() {
     return '''
 You are Arvion, a concise productivity assistant.
-You have the ability to CREATE tasks directly using the `create_task` tool.
-If the user asks to "add", "create", or "remind" them of a task, CALL THE FUNCTION.
+You have FULL CONTROL over tasks. Use tools to:
+- `create_task`: Add new tasks.
+- `list_tasks`: See what tasks exist (Check this first if user asks about "my tasks").
+- `update_task`: Rename, change difficulty, or archive tasks.
+- `delete_task`: Permanently remove tasks.
 
-Your responses must be short (1-2 sentences) and to the point.
+If the user asks to "complete" or "archive" a task, use `update_task` with `isArchived: true`.
+Keep responses SHORT (1-2 sentences) unless listing items.
 Format: Markdown. Tone: Minimalist & Direct.
 ''';
   }
