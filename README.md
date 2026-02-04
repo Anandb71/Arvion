@@ -30,11 +30,20 @@ Create color-coded tasks to track any habit, goal, or project. Each task gets it
 ### ⚡ **Quick Commits**
 Log your progress with one click. Choose intensity levels (1-5) to show how much effort you put in.
 
+### 🤖 **AI Assistant**
+Powered by Google Gemini with full CRUD capabilities - create, list, update, and delete tasks via natural language.
+
 </td>
 <td width="50%">
 
 ### 📈 **Per-Task Graphs**
 View individual heatmaps for each task, showing exactly when and how much you worked on each goal.
+
+### ⏱️ **Screen Time Tracking**
+Automatic monitoring of app usage and screen time with idle detection. Track productivity patterns effortlessly.
+
+### 🔄 **Auto-Commit**
+Background verification service automatically logs commits when you use tracked applications (Windows only).
 
 ### 🎨 **Premium Dark Theme**
 Sleek, modern interface designed for focus and productivity with glassmorphism effects.
@@ -126,6 +135,8 @@ lib/
 | **Framework** | Flutter 3.x |
 | **State Management** | Riverpod |
 | **Database** | Isar (embedded NoSQL) |
+| **AI** | Google Gemini API |
+| **Platform APIs** | Win32 (Windows) |
 | **UI Components** | Custom widgets with glassmorphism |
 | **Platform** | Windows (macOS/Linux coming soon) |
 
@@ -148,9 +159,12 @@ lib/
 - [x] Quick commit functionality
 - [x] Per-task contribution graphs
 - [x] Multi-color heatmap cells
-- [ ] Protocols (daily/weekly routines)
-- [ ] Insights & analytics
-- [ ] Data export (JSON/CSV)
+- [x] AI Assistant with full CRUD (Gemini API)
+- [x] Screen time tracking
+- [x] Auto-commit via app usage monitoring
+- [x] Protocols (daily/weekly routines)
+- [x] Insights & analytics
+- [x] Data export (JSON/CSV)
 - [ ] Cloud sync
 - [ ] macOS support
 - [ ] Linux support
