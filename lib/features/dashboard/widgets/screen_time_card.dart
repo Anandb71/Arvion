@@ -85,7 +85,7 @@ class ScreenTimeCard extends ConsumerWidget {
           child: LinearProgressIndicator(
             value: percentage,
             minHeight: 8,
-            backgroundColor: ArvionColors.surfaceDark,
+            backgroundColor: ArvionColors.surface,
             valueColor: AlwaysStoppedAnimation<Color>(
               percentage > 0.8
                   ? ArvionColors.error
