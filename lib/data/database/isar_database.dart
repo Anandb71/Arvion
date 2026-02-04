@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import '../models/task.dart';
 import '../models/commit.dart';
 import '../models/protocol.dart';
+import '../models/screen_time_log.dart';
 
 /// Isar Database Manager
 /// Handles database initialization and provides access to collections
@@ -31,7 +32,7 @@ class IsarDatabase {
     final dir = await getApplicationDocumentsDirectory();
     
     _instance = await Isar.open(
-      [TaskSchema, CommitSchema, ProtocolSchema],
+      [TaskSchema, CommitSchema, ProtocolSchema, ScreenTimeLogSchema],
       directory: dir.path,
       name: 'arvion_db',
       inspector: true, // Enable Isar Inspector for debugging
@@ -53,6 +54,7 @@ class IsarDatabase {
       await isar.tasks.clear();
       await isar.commits.clear();
       await isar.protocols.clear();
+      await isar.screenTimeLogs.clear();
     });
   }
 }

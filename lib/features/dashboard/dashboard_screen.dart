@@ -7,6 +7,7 @@ import '../../providers/providers.dart';
 import 'widgets/heatmap_grid.dart';
 import 'widgets/stats_card.dart';
 import 'widgets/daily_summary_panel.dart';
+import 'widgets/screen_time_card.dart';
 
 /// Main dashboard screen with heatmap and summary - fully responsive
 class DashboardScreen extends ConsumerWidget {
@@ -149,6 +150,8 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 24),
+        const ScreenTimeCard(), // New screen time widget
+        const SizedBox(height: 24),
         _buildPerTaskHeatmaps(ref),
       ],
     );
@@ -158,6 +161,8 @@ class DashboardScreen extends ConsumerWidget {
     return Column(
       children: [
         _buildDailySummary(context, ref),
+        const SizedBox(height: 24),
+        const ScreenTimeCard(), // New screen time widget
         const SizedBox(height: 24),
         _buildHeatmapSection(context, ref),
         const SizedBox(height: 24),

@@ -122,6 +122,8 @@ class _AppShellState extends ConsumerState<AppShell> {
     final dbInitialized = ref.watch(databaseInitializedProvider);
     // Ensure verification service is running
     ref.watch(verificationServiceProvider);
+    // Ensure screen time tracking is running
+    ref.watch(screenTimeServiceProvider);
 
     return dbInitialized.when(
       data: (_) => KeyboardListener(

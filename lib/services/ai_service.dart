@@ -23,7 +23,7 @@ class AIService {
 
   static const _storage = FlutterSecureStorage();
   static const _apiKeyKey = 'gemini_api_key';
-  static const _defaultModel = 'gemini-1.5-flash';
+  static const _defaultModel = 'gemini-2.5-flash';
   static const _modelKey = 'gemini_model';
 
   AIService({required this.taskRepository});

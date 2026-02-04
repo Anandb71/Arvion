@@ -2,10 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/data_export_service.dart';
 import '../services/ai_service.dart';
 import '../services/verification_service.dart';
+import '../services/screen_time_service.dart';
 import '../data/database/isar_database.dart';
 import '../data/repositories/task_repository.dart';
 import '../data/repositories/commit_repository.dart';
 import '../data/repositories/protocol_repository.dart';
+import '../data/repositories/screen_time_repository.dart';
 import '../data/models/task.dart';
 import '../data/models/commit.dart';
 import '../data/models/protocol.dart';
@@ -260,4 +262,29 @@ final verificationServiceProvider = Provider<VerificationService>((ref) {
   service.start();
   ref.onDispose(() => service.stop());
   return service;
+});
+
+// ============================================================================
+// Screen Time Providers
+// ============================================================================
+
+/// Screen Time repository provider
+final screenTimeRepositoryProvider = Provider<ScreenTimeRepository>((ref) {
+  return ScreenTimeRepository();
+});
+
+/// Screen Time Service provider (Auto-starts monitoring)
+final screenTimeServiceProvider = Provider<ScreenTimeService>((ref) {
+  final service = ScreenTimeService(
+    repository: ref.watch(screenTimeRepositoryProvider),
+  );
+  service.start();
+  ref.onDispose(() => service.stop());
+  return service;
+});
+
+/// Watch today's total screen time in seconds
+final todayScreenTimeProvider = StreamProvider<int>((ref) {
+  final repo = ref.watch(screenTimeRepositoryProvider);
+  return repo.watchDailyTotal(DateTime.now());
 });
