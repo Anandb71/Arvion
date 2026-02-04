@@ -139,11 +139,11 @@ class CommitRepository {
           .timestampGreaterThan(startDate)
           .findAll();
 
-      // Get all tasks
-      final tasks = await taskRepo.getAll();
+      // Get ONLY active tasks (not deleted, not archived)
+      final tasks = await taskRepo.getAllActive();
       final taskMap = {for (var t in tasks) t.id: t};
 
-      // Group commits by task
+      // Group commits by task - only for tasks that still exist
       final taskHeatmaps = <int, Map<int, int>>{}; // taskId -> {dayIndex: intensity}
       final taskCommitCounts = <int, int>{};
 
@@ -151,6 +151,9 @@ class CommitRepository {
         final dayIndex = commit.dayIndex;
 
         for (final taskId in commit.taskIds) {
+          // Skip if task no longer exists
+          if (!taskMap.containsKey(taskId)) continue;
+          
           taskHeatmaps.putIfAbsent(taskId, () => {});
           taskHeatmaps[taskId]![dayIndex] =
               (taskHeatmaps[taskId]![dayIndex] ?? 0) + commit.intensity;
@@ -158,11 +161,12 @@ class CommitRepository {
         }
       }
 
-      // Convert to TaskHeatmapData
+      // Convert to TaskHeatmapData - only for existing tasks
       final result = <int, TaskHeatmapData>{};
       for (final entry in taskHeatmaps.entries) {
         final taskId = entry.key;
         final task = taskMap[taskId];
+        // Double-check task exists (should always be true due to filter above)
         if (task != null) {
           // Cap intensities at 5
           final cappedData = entry.value.map(
