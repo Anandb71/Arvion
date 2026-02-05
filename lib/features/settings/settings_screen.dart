@@ -6,6 +6,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../../widgets/glass_card.dart';
 import '../../providers/providers.dart';
+import '../../services/startup_service.dart';
 
 /// Settings screen
 class SettingsScreen extends ConsumerWidget {
@@ -32,6 +33,15 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 32),
+
+          // System section
+          _buildSection(
+            title: 'System',
+            children: [
+              const _StartupToggleTile(),
+            ],
+          ),
+          const SizedBox(height: 24),
 
           // AI Configuration
           _buildSection(
@@ -701,6 +711,60 @@ class _ModelSettingTileState extends State<_ModelSettingTile> {
              ),
            ),
       ],
+    );
+  }
+}
+
+/// Startup toggle tile with async state management
+class _StartupToggleTile extends StatefulWidget {
+  const _StartupToggleTile();
+
+  @override
+  State<_StartupToggleTile> createState() => _StartupToggleTileState();
+}
+
+class _StartupToggleTileState extends State<_StartupToggleTile> {
+  bool _isEnabled = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadState();
+  }
+
+  Future<void> _loadState() async {
+    final enabled = await StartupService.isStartupEnabled();
+    if (mounted) setState(() { _isEnabled = enabled; _isLoading = false; });
+  }
+
+  Future<void> _toggleStartup(bool value) async {
+    setState(() => _isLoading = true);
+    final success = await StartupService.setStartupEnabled(value);
+    if (success && mounted) {
+      setState(() { _isEnabled = value; _isLoading = false; });
+    } else if (mounted) {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update startup setting')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _SettingTile(
+      icon: Icons.power_settings_new,
+      title: 'Start on Startup',
+      subtitle: _isEnabled ? 'Enabled' : 'Disabled',
+      trailing: _isLoading
+          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+          : Switch(
+              value: _isEnabled,
+              onChanged: _toggleStartup,
+              activeColor: ArvionColors.primary,
+            ),
+      onTap: () {},
     );
   }
 }
