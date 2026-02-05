@@ -40,16 +40,30 @@ Once the vulnerability is fixed:
 
 ## Security Best Practices for Users
 
+### API Key Storage
+
+- **Gemini API keys are stored securely** using `flutter_secure_storage`
+- On Windows, this uses **Windows Credential Manager** (OS-level encryption)
+- Keys are NOT stored in the Isar database or any plain-text files
+- Keys are never transmitted except to the Gemini API directly
+
 ### Data Storage
 
 - Arvion stores all data locally using Isar database
 - Data is stored in your user profile directory
-- No data is transmitted to external servers
+- No data is transmitted to external servers (except AI queries to Google Gemini when you use the chat)
+
+### Screen Time Data
+
+- Screen time data is stored locally only
+- App usage monitoring runs on-device
+- No usage data is sent externally
 
 ### Backups
 
-- Regular backups are recommended
-- Export functionality (coming soon) will allow data portability
+- Use Settings → Export Backup for JSON backup
+- Use Settings → Export History for CSV export
+- Store backup files securely
 
 ## Scope
 
