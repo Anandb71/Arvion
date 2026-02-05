@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../../widgets/glass_card.dart';
 import '../../providers/providers.dart';
 import '../../services/startup_service.dart';
+import '../../data/database/isar_database.dart';
 
 /// Settings screen
 class SettingsScreen extends ConsumerWidget {
@@ -47,11 +49,11 @@ class SettingsScreen extends ConsumerWidget {
           _buildSection(
             title: 'AI Configuration',
             children: [
-               _SettingTile(
+              _SettingTile(
                 icon: Icons.auto_awesome,
                 title: 'AI Provider',
-                subtitle: 'Google Gemini (Flash 1.5)',
-                onTap: () {},
+                subtitle: 'Google Gemini',
+                onTap: () => _showInfoSnackbar(context, 'Currently only Google Gemini is supported'),
               ),
               _SecureInputSettingTile(
                 icon: Icons.key_outlined,
@@ -68,91 +70,7 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.help_outline,
                 title: 'Get API Key',
                 subtitle: 'aistudio.google.com',
-                onTap: () {}, // Could launch URL
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Appearance section
-          _buildSection(
-            title: 'Appearance',
-            children: [
-              _SettingTile(
-                icon: Icons.palette_outlined,
-                title: 'Theme',
-                subtitle: 'Dark (OLED)',
-                onTap: () {},
-              ),
-              _SettingTile(
-                icon: Icons.color_lens_outlined,
-                title: 'Accent Color',
-                subtitle: 'Green',
-                trailing: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: ArvionColors.primary,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                onTap: () {},
-              ),
-              _SettingTile(
-                icon: Icons.text_fields,
-                title: 'Font Size',
-                subtitle: 'Medium',
-                onTap: () {},
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Heatmap section
-          _buildSection(
-            title: 'Heatmap',
-            children: [
-              _SettingTile(
-                icon: Icons.grid_view,
-                title: 'Weeks to Show',
-                subtitle: '52 weeks',
-                onTap: () {},
-              ),
-              _SettingTile(
-                icon: Icons.animation,
-                title: 'Compile Animation',
-                subtitle: 'Enabled',
-                trailing: Switch(
-                  value: true,
-                  onChanged: (v) {},
-                  activeColor: ArvionColors.primary,
-                ),
-                onTap: () {},
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // Goals section
-          _buildSection(
-            title: 'Daily Goals',
-            children: [
-              _SettingTile(
-                icon: Icons.flag_outlined,
-                title: 'Daily Commit Goal',
-                subtitle: '5 commits',
-                onTap: () {},
-              ),
-              _SettingTile(
-                icon: Icons.notifications_outlined,
-                title: 'Reminders',
-                subtitle: 'Enabled',
-                trailing: Switch(
-                  value: true,
-                  onChanged: (v) {},
-                  activeColor: ArvionColors.primary,
-                ),
-                onTap: () {},
+                onTap: () => _launchUrl('https://aistudio.google.com/apikey'),
               ),
             ],
           ),
@@ -188,7 +106,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: 'Export History',
                 subtitle: 'CSV format (Spreadsheet friendly)',
                 onTap: () async {
-                   try {
+                  try {
                     final path = await ref.read(dataExportServiceProvider).exportToCsv();
                     if (path != null && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -205,17 +123,11 @@ class SettingsScreen extends ConsumerWidget {
                 },
               ),
               _SettingTile(
-                icon: Icons.upload_outlined,
-                title: 'Import Data',
-                subtitle: 'From backup',
-                onTap: () {},
-              ),
-              _SettingTile(
                 icon: Icons.delete_outline,
                 title: 'Clear All Data',
                 subtitle: 'This cannot be undone',
                 titleColor: ArvionColors.error,
-                onTap: () {},
+                onTap: () => _showClearDataDialog(context, ref),
               ),
             ],
           ),
@@ -229,13 +141,13 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.info_outline,
                 title: 'Version',
                 subtitle: '1.0.0',
-                onTap: () {},
+                onTap: () => _showInfoSnackbar(context, 'Arvion v1.0.0'),
               ),
               _SettingTile(
                 icon: Icons.code,
                 title: 'GitHub',
                 subtitle: 'github.com/Anandb71/Arvion',
-                onTap: () {},
+                onTap: () => _launchUrl('https://github.com/Anandb71/Arvion'),
               ),
             ],
           ),
@@ -245,32 +157,74 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
+  static void _showInfoSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
+    );
+  }
+
+  static Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  static void _showClearDataDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: ArvionColors.surface,
+        title: const Text('Clear All Data?', style: TextStyle(color: ArvionColors.textPrimary)),
+        content: const Text(
+          'This will delete ALL tasks, commits, protocols, and screen time data. This action cannot be undone!',
+          style: TextStyle(color: ArvionColors.textSecondary),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              await IsarDatabase.instance.clearAll();
+              if (context.mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('All data cleared')),
+                );
+              }
+            },
+            child: const Text('Clear All', style: TextStyle(color: ArvionColors.error)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSection({
     required String title,
     required List<Widget> children,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: ArvionTypography.titleSmall.copyWith(
-            color: ArvionColors.textSecondary,
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              title,
+              style: ArvionTypography.labelLarge.copyWith(
+                color: ArvionColors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        GlassCard(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: children,
-          ),
-        ),
-      ],
+          ...children,
+        ],
+      ),
     );
   }
 }
 
-class _SettingTile extends StatefulWidget {
+class _SettingTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
@@ -281,212 +235,52 @@ class _SettingTile extends StatefulWidget {
   const _SettingTile({
     required this.icon,
     required this.title,
-    required this.subtitle,
+    this.subtitle = '',
     this.trailing,
     this.onTap,
     this.titleColor,
   });
 
   @override
-  State<_SettingTile> createState() => _SettingTileState();
-}
-
-class _SettingTileState extends State<_SettingTile> {
-  bool _isHovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: _isHovered ? ArvionColors.surfaceLight : Colors.transparent,
-            border: const Border(
-              bottom: BorderSide(color: ArvionColors.border, width: 0.5),
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                widget.icon,
-                size: 20,
-                color: widget.titleColor ?? ArvionColors.textSecondary,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.title,
-                      style: ArvionTypography.bodyMedium.copyWith(
-                        color: widget.titleColor ?? ArvionColors.textPrimary,
-                      ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: ArvionColors.textMuted),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: ArvionTypography.bodyMedium.copyWith(
+                      color: titleColor ?? ArvionColors.textPrimary,
                     ),
+                  ),
+                  if (subtitle.isNotEmpty)
                     Text(
-                      widget.subtitle,
+                      subtitle,
                       style: ArvionTypography.bodySmall.copyWith(
                         color: ArvionColors.textMuted,
                       ),
                     ),
-                  ],
-                ),
+                ],
               ),
-              if (widget.trailing != null) widget.trailing!,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _InputSettingTile extends StatefulWidget {
-  final IconData icon;
-  final String title;
-  final String defaultValue;
-  final String prefKey;
-
-  const _InputSettingTile({
-    required this.icon,
-    required this.title,
-    required this.defaultValue,
-    required this.prefKey,
-  });
-
-  @override
-  State<_InputSettingTile> createState() => _InputSettingTileState();
-}
-
-class _InputSettingTileState extends State<_InputSettingTile> {
-  late TextEditingController _controller;
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.defaultValue);
-    _loadValue();
-  }
-
-  Future<void> _loadValue() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        _controller.text = prefs.getString(widget.prefKey) ?? widget.defaultValue;
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _saveValue(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(widget.prefKey, value);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_isLoading) return const SizedBox.shrink();
-
-    return _SettingTile(
-      icon: widget.icon,
-      title: widget.title,
-      subtitle: '', 
-      trailing: SizedBox(
-        width: 200,
-        child: TextField(
-          controller: _controller,
-          onChanged: _saveValue,
-          style: ArvionTypography.bodyMedium.copyWith(
-            color: ArvionColors.textPrimary,
-          ),
-          decoration: InputDecoration(
-            isDense: true,
-            hintText: widget.defaultValue,
-            hintStyle: ArvionTypography.bodyMedium.copyWith(
-              color: ArvionColors.textMuted,
             ),
-            border: InputBorder.none,
-          ),
+            if (trailing != null) trailing!,
+          ],
         ),
       ),
     );
   }
 }
 
-class _ToggleSettingTile extends StatefulWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final String prefKey;
-
-  const _ToggleSettingTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.prefKey,
-  });
-
-  @override
-  State<_ToggleSettingTile> createState() => _ToggleSettingTileState();
-}
-
-class _ToggleSettingTileState extends State<_ToggleSettingTile> {
-  bool _value = true;
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadValue();
-  }
-
-  Future<void> _loadValue() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        _value = prefs.getBool(widget.prefKey) ?? true;
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _saveValue(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(widget.prefKey, value);
-    setState(() => _value = value);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_isLoading) return const SizedBox.shrink();
-
-    return _SettingTile(
-      icon: widget.icon,
-      title: widget.title,
-      subtitle: widget.subtitle,
-      trailing: Switch(
-        value: _value,
-        onChanged: _saveValue,
-        activeColor: ArvionColors.primary,
-      ),
-      onTap: () => _saveValue(!_value),
-    );
-  }
-}
-
+/// Secure input tile for sensitive data like API keys
 class _SecureInputSettingTile extends StatefulWidget {
   final IconData icon;
   final String title;
@@ -505,15 +299,15 @@ class _SecureInputSettingTile extends StatefulWidget {
 }
 
 class _SecureInputSettingTileState extends State<_SecureInputSettingTile> {
-  late TextEditingController _controller;
-  bool _isLoading = true;
+  final _controller = TextEditingController();
   final _storage = const FlutterSecureStorage();
-  bool _isVisible = false;
+  bool _isSet = false;
+  bool _isEditing = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
     _loadValue();
   }
 
@@ -521,7 +315,7 @@ class _SecureInputSettingTileState extends State<_SecureInputSettingTile> {
     final value = await _storage.read(key: widget.prefKey);
     if (mounted) {
       setState(() {
-        _controller.text = value ?? '';
+        _isSet = value != null && value.isNotEmpty;
         _isLoading = false;
       });
     }
@@ -529,6 +323,15 @@ class _SecureInputSettingTileState extends State<_SecureInputSettingTile> {
 
   Future<void> _saveValue(String value) async {
     await _storage.write(key: widget.prefKey, value: value);
+    setState(() {
+      _isSet = value.isNotEmpty;
+      _isEditing = false;
+    });
+     if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('API Key saved')),
+        );
+      }
   }
 
   @override
@@ -541,48 +344,54 @@ class _SecureInputSettingTileState extends State<_SecureInputSettingTile> {
   Widget build(BuildContext context) {
     if (_isLoading) return const SizedBox.shrink();
 
-    return _SettingTile(
-      icon: widget.icon,
-      title: widget.title,
-      subtitle: '',
-      trailing: SizedBox(
-        width: 220,
+    if (_isEditing) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
+            Icon(widget.icon, size: 20, color: ArvionColors.textMuted),
+            const SizedBox(width: 16),
             Expanded(
               child: TextField(
                 controller: _controller,
-                onChanged: _saveValue,
-                obscureText: !_isVisible,
+                obscureText: true,
                 style: ArvionTypography.bodyMedium.copyWith(
                   color: ArvionColors.textPrimary,
                 ),
                 decoration: InputDecoration(
-                  isDense: true,
                   hintText: widget.hintText,
-                  hintStyle: ArvionTypography.bodyMedium.copyWith(
-                    color: ArvionColors.textMuted,
+                  isDense: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  border: InputBorder.none,
                 ),
               ),
             ),
+            const SizedBox(width: 8),
             IconButton(
-              icon: Icon(
-                _isVisible ? Icons.visibility_off : Icons.visibility,
-                size: 18,
-                color: ArvionColors.textMuted,
-              ),
-              onPressed: () => setState(() => _isVisible = !_isVisible),
+              icon: const Icon(Icons.check, color: ArvionColors.primary),
+              onPressed: () => _saveValue(_controller.text),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close, color: ArvionColors.textMuted),
+              onPressed: () => setState(() => _isEditing = false),
             ),
           ],
         ),
-      ),
+      );
+    }
+
+    return _SettingTile(
+      icon: widget.icon,
+      title: widget.title,
+      subtitle: _isSet ? '••••••••••••' : 'Not set',
+      trailing: Icon(Icons.edit, size: 18, color: ArvionColors.textMuted),
+      onTap: () => setState(() => _isEditing = true),
     );
   }
 }
 
+/// Model selection dropdown tile
 class _ModelSettingTile extends StatefulWidget {
   final IconData icon;
   final String title;
@@ -599,17 +408,18 @@ class _ModelSettingTile extends StatefulWidget {
 }
 
 class _ModelSettingTileState extends State<_ModelSettingTile> {
-  String _selectedModel = 'gemini-1.5-flash';
-  final TextEditingController _customController = TextEditingController();
-  bool _isLoading = true;
-  bool _isCustom = false;
-
-  final Map<String, String> _models = {
-    'gemini-1.5-flash': 'Gemini 1.5 Flash (Fast)',
-    'gemini-1.5-pro': 'Gemini 1.5 Pro (Reasoning)',
-    'gemini-2.0-flash-exp': 'Gemini 2.0 Flash (Exp)',
-    'custom': 'Custom Model...',
+  final _models = {
+    'gemini-2.5-flash': 'Gemini 2.5 Flash (Fastest)',
+    'gemini-2.0-flash': 'Gemini 2.0 Flash',
+    'gemini-1.5-flash': 'Gemini 1.5 Flash',
+    'gemini-1.5-pro': 'Gemini 1.5 Pro (Best)',
+    '__custom__': 'Custom Model...',
   };
+
+  String _selectedModel = 'gemini-2.5-flash';
+  bool _isCustom = false;
+  bool _isLoading = true;
+  final _customController = TextEditingController();
 
   @override
   void initState() {
@@ -619,14 +429,14 @@ class _ModelSettingTileState extends State<_ModelSettingTile> {
 
   Future<void> _loadValue() async {
     final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString(widget.prefKey);
     if (mounted) {
-      final saved = prefs.getString(widget.prefKey) ?? 'gemini-1.5-flash';
       setState(() {
-        if (_models.containsKey(saved) && saved != 'custom') {
+        if (saved != null && _models.containsKey(saved)) {
           _selectedModel = saved;
           _isCustom = false;
-        } else {
-          _selectedModel = 'custom';
+        } else if (saved != null && saved.isNotEmpty) {
+          _selectedModel = '__custom__';
           _isCustom = true;
           _customController.text = saved;
         }
@@ -638,22 +448,20 @@ class _ModelSettingTileState extends State<_ModelSettingTile> {
   Future<void> _saveValue(String? value) async {
     if (value == null) return;
     final prefs = await SharedPreferences.getInstance();
-
-    if (value == 'custom') {
+    if (value == '__custom__') {
       setState(() {
-        _selectedModel = 'custom';
+        _selectedModel = value;
         _isCustom = true;
       });
-      // Don't save 'custom' yet, wait for text input
     } else {
-       await prefs.setString(widget.prefKey, value);
-       setState(() {
-         _selectedModel = value;
-         _isCustom = false;
-       });
+      await prefs.setString(widget.prefKey, value);
+      setState(() {
+        _selectedModel = value;
+        _isCustom = false;
+      });
     }
   }
-  
+
   Future<void> _saveCustomValue(String value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(widget.prefKey, value);
@@ -674,7 +482,7 @@ class _ModelSettingTileState extends State<_ModelSettingTile> {
         _SettingTile(
           icon: widget.icon,
           title: widget.title,
-          subtitle: _isCustom ? 'Manual Entry' : '',
+          subtitle: _isCustom ? 'Custom' : '',
           trailing: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: _selectedModel,
@@ -692,24 +500,24 @@ class _ModelSettingTileState extends State<_ModelSettingTile> {
           ),
         ),
         if (_isCustom)
-           Padding(
-             padding: const EdgeInsets.only(left: 52, right: 16, bottom: 16),
-             child: TextField(
-                controller: _customController,
-                onChanged: _saveCustomValue,
-                style: ArvionTypography.bodyMedium.copyWith(color: ArvionColors.textPrimary),
-                decoration: InputDecoration(
-                  isDense: true,
-                  hintText: 'e.g. gemini-1.5-pro-latest',
-                  hintStyle: ArvionTypography.bodyMedium.copyWith(color: ArvionColors.textMuted),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: ArvionColors.border),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          Padding(
+            padding: const EdgeInsets.only(left: 52, right: 16, bottom: 16),
+            child: TextField(
+              controller: _customController,
+              onChanged: _saveCustomValue,
+              style: ArvionTypography.bodyMedium.copyWith(color: ArvionColors.textPrimary),
+              decoration: InputDecoration(
+                isDense: true,
+                hintText: 'e.g. gemini-1.5-pro-latest',
+                hintStyle: ArvionTypography.bodyMedium.copyWith(color: ArvionColors.textMuted),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: ArvionColors.border),
                 ),
-             ),
-           ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+            ),
+          ),
       ],
     );
   }
