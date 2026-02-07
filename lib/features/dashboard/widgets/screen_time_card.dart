@@ -52,23 +52,33 @@ class ScreenTimeCard extends ConsumerWidget {
                 color: ArvionColors.secondary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.timer_outlined, size: 20, color: ArvionColors.secondary),
+              child: const Icon(
+                Icons.timer_outlined,
+                size: 20,
+                color: ArvionColors.secondary,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 'Screen Time',
-                style: ArvionTypography.labelMedium.copyWith(color: ArvionColors.textSecondary),
+                style: ArvionTypography.labelMedium.copyWith(
+                  color: ArvionColors.textSecondary,
+                ),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const ScreenTimeDetailsScreen()),
+                MaterialPageRoute(
+                  builder: (_) => const ScreenTimeDetailsScreen(),
+                ),
               ),
               child: Text(
                 'View Details',
-                style: ArvionTypography.labelSmall.copyWith(color: ArvionColors.primary),
+                style: ArvionTypography.labelSmall.copyWith(
+                  color: ArvionColors.primary,
+                ),
               ),
             ),
           ],
@@ -88,7 +98,12 @@ class ScreenTimeCard extends ConsumerWidget {
                 color: ArvionColors.textPrimary,
               ),
             ),
-            Text('h ', style: ArvionTypography.headlineSmall.copyWith(color: ArvionColors.textMuted)),
+            Text(
+              'h ',
+              style: ArvionTypography.headlineSmall.copyWith(
+                color: ArvionColors.textMuted,
+              ),
+            ),
             Text(
               '$minutes',
               style: ArvionTypography.headlineLarge.copyWith(
@@ -97,7 +112,12 @@ class ScreenTimeCard extends ConsumerWidget {
                 color: ArvionColors.textPrimary,
               ),
             ),
-            Text('m', style: ArvionTypography.headlineSmall.copyWith(color: ArvionColors.textMuted)),
+            Text(
+              'm',
+              style: ArvionTypography.headlineSmall.copyWith(
+                color: ArvionColors.textMuted,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -113,8 +133,8 @@ class ScreenTimeCard extends ConsumerWidget {
               percentage > 0.8
                   ? ArvionColors.error
                   : percentage > 0.5
-                      ? ArvionColors.warning
-                      : ArvionColors.secondary,
+                  ? ArvionColors.warning
+                  : ArvionColors.secondary,
             ),
           ),
         ),
@@ -127,7 +147,9 @@ class ScreenTimeCard extends ConsumerWidget {
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Text(
                 'Start using apps to see your top apps here',
-                style: ArvionTypography.labelSmall.copyWith(color: ArvionColors.textMuted),
+                style: ArvionTypography.labelSmall.copyWith(
+                  color: ArvionColors.textMuted,
+                ),
               );
             }
 
@@ -137,7 +159,10 @@ class ScreenTimeCard extends ConsumerWidget {
               runSpacing: 8,
               children: topApps.map((app) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: ArvionColors.surface,
                     borderRadius: BorderRadius.circular(20),
@@ -148,7 +173,9 @@ class ScreenTimeCard extends ConsumerWidget {
                     children: [
                       Text(
                         app.appName,
-                        style: ArvionTypography.labelSmall.copyWith(color: ArvionColors.textSecondary),
+                        style: ArvionTypography.labelSmall.copyWith(
+                          color: ArvionColors.textSecondary,
+                        ),
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -174,7 +201,10 @@ class ScreenTimeCard extends ConsumerWidget {
       child: SizedBox(
         height: 140,
         child: Center(
-          child: CircularProgressIndicator(color: ArvionColors.secondary, strokeWidth: 2),
+          child: CircularProgressIndicator(
+            color: ArvionColors.secondary,
+            strokeWidth: 2,
+          ),
         ),
       ),
     );
@@ -186,7 +216,9 @@ class ScreenTimeCard extends ConsumerWidget {
       child: Center(
         child: Text(
           'Unable to load screen time',
-          style: ArvionTypography.bodySmall.copyWith(color: ArvionColors.textMuted),
+          style: ArvionTypography.bodySmall.copyWith(
+            color: ArvionColors.textMuted,
+          ),
         ),
       ),
     );

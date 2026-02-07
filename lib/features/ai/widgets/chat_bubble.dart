@@ -13,10 +13,16 @@ class ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     // Styling constants
     final bool isUser = message.isUser;
-    final bgColor = isUser ? ArvionColors.primary.withValues(alpha: 0.15) : ArvionColors.surfaceLight;
-    final borderColor = isUser ? ArvionColors.primary.withValues(alpha: 0.3) : ArvionColors.border;
-    final alignment = isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    
+    final bgColor = isUser
+        ? ArvionColors.primary.withValues(alpha: 0.15)
+        : ArvionColors.surfaceLight;
+    final borderColor = isUser
+        ? ArvionColors.primary.withValues(alpha: 0.3)
+        : ArvionColors.border;
+    final alignment = isUser
+        ? CrossAxisAlignment.end
+        : CrossAxisAlignment.start;
+
     return Column(
       crossAxisAlignment: alignment,
       children: [
@@ -40,7 +46,11 @@ class ChatBubble extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.smart_toy_outlined, size: 14, color: ArvionColors.primary),
+                    const Icon(
+                      Icons.smart_toy_outlined,
+                      size: 14,
+                      color: ArvionColors.primary,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'ASSISTANT',
@@ -54,14 +64,16 @@ class ChatBubble extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
               ],
-              
+
               MarkdownBody(
                 data: message.content,
                 selectable: true,
                 styleSheet: MarkdownStyleSheet(
-                  p: ArvionTypography.bodyMedium.copyWith(color: ArvionColors.textPrimary),
+                  p: ArvionTypography.bodyMedium.copyWith(
+                    color: ArvionColors.textPrimary,
+                  ),
                   strong: ArvionTypography.bodyMedium.copyWith(
-                    color: ArvionColors.textPrimary, 
+                    color: ArvionColors.textPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                   listBullet: const TextStyle(color: ArvionColors.primary),

@@ -69,7 +69,9 @@ class ProtocolsScreen extends ConsumerWidget {
                           Icon(
                             Icons.flag_outlined,
                             size: 64,
-                            color: ArvionColors.textMuted.withValues(alpha: 0.5),
+                            color: ArvionColors.textMuted.withValues(
+                              alpha: 0.5,
+                            ),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -89,7 +91,7 @@ class ProtocolsScreen extends ConsumerWidget {
                       ),
                     );
                   }
-                  
+
                   return ListView.builder(
                     itemCount: protocols.length,
                     itemBuilder: (context, index) {
@@ -97,10 +99,14 @@ class ProtocolsScreen extends ConsumerWidget {
                       return ProtocolCard(
                         protocol: protocol,
                         onComplete: () {
-                          ref.read(protocolRepositoryProvider).complete(protocol.id);
+                          ref
+                              .read(protocolRepositoryProvider)
+                              .complete(protocol.id);
                         },
                         onDelete: () {
-                          ref.read(protocolRepositoryProvider).delete(protocol.id);
+                          ref
+                              .read(protocolRepositoryProvider)
+                              .delete(protocol.id);
                         },
                       );
                     },
@@ -110,7 +116,10 @@ class ProtocolsScreen extends ConsumerWidget {
                   child: CircularProgressIndicator(color: ArvionColors.primary),
                 ),
                 error: (e, stack) => Center(
-                  child: Text('Error: $e', style: const TextStyle(color: ArvionColors.error)),
+                  child: Text(
+                    'Error: $e',
+                    style: const TextStyle(color: ArvionColors.error),
+                  ),
                 ),
               ),
             ),

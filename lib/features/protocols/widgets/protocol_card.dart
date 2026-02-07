@@ -19,10 +19,13 @@ class ProtocolCard extends StatelessWidget {
     if (protocol.lastCompletedAt == null) return false;
     final now = DateTime.now();
     final last = protocol.lastCompletedAt!;
-    return last.year == now.year && last.month == now.month && last.day == now.day;
+    return last.year == now.year &&
+        last.month == now.month &&
+        last.day == now.day;
   }
 
-  Color get _color => Color(int.parse(protocol.colorHex.replaceFirst('#', '0xFF')));
+  Color get _color =>
+      Color(int.parse(protocol.colorHex.replaceFirst('#', '0xFF')));
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +63,18 @@ class ProtocolCard extends StatelessWidget {
                             protocol.title,
                             style: ArvionTypography.titleMedium.copyWith(
                               color: ArvionColors.textPrimary,
-                              decoration: isCompletedToday ? TextDecoration.lineThrough : null,
+                              decoration: isCompletedToday
+                                  ? TextDecoration.lineThrough
+                                  : null,
                             ),
                           ),
                         ),
                         if (protocol.currentStreak > 0) ...[
-                          Icon(Icons.local_fire_department, size: 16, color: ArvionColors.warning),
+                          Icon(
+                            Icons.local_fire_department,
+                            size: 16,
+                            color: ArvionColors.warning,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${protocol.currentStreak}',
@@ -95,15 +104,24 @@ class ProtocolCard extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: Icon(
-                      isCompletedToday ? Icons.check_circle : Icons.check_circle_outline,
-                      color: isCompletedToday ? ArvionColors.success : ArvionColors.textMuted,
+                      isCompletedToday
+                          ? Icons.check_circle
+                          : Icons.check_circle_outline,
+                      color: isCompletedToday
+                          ? ArvionColors.success
+                          : ArvionColors.textMuted,
                       size: 28,
                     ),
                     onPressed: isCompletedToday ? null : onComplete,
-                    tooltip: isCompletedToday ? 'Completed today' : 'Mark complete',
+                    tooltip: isCompletedToday
+                        ? 'Completed today'
+                        : 'Mark complete',
                   ),
                   PopupMenuButton(
-                    icon: const Icon(Icons.more_vert, color: ArvionColors.textMuted),
+                    icon: const Icon(
+                      Icons.more_vert,
+                      color: ArvionColors.textMuted,
+                    ),
                     onSelected: (value) {
                       if (value == 'delete') onDelete();
                     },
@@ -111,7 +129,7 @@ class ProtocolCard extends StatelessWidget {
                       const PopupMenuItem(
                         value: 'delete',
                         child: Text(
-                          'Delete', 
+                          'Delete',
                           style: TextStyle(color: ArvionColors.error),
                         ),
                       ),

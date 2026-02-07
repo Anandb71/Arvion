@@ -11,10 +11,8 @@ class AIMessage {
   final bool isUser;
   final DateTime timestamp;
 
-  AIMessage({
-    required this.content,
-    required this.isUser,
-  }) : timestamp = DateTime.now();
+  AIMessage({required this.content, required this.isUser})
+    : timestamp = DateTime.now();
 }
 
 /// AI Service connecting to Google Gemini
@@ -37,9 +35,19 @@ class AIService {
         Schema(
           SchemaType.object,
           properties: {
-            'title': Schema(SchemaType.string, description: 'Title of the task (e.g., "Read a book")'),
-            'description': Schema(SchemaType.string, description: 'Optional description'),
-            'difficulty': Schema(SchemaType.integer, description: 'Difficulty level from 1 (Easy) to 5 (Hard). Default is 2.'),
+            'title': Schema(
+              SchemaType.string,
+              description: 'Title of the task (e.g., "Read a book")',
+            ),
+            'description': Schema(
+              SchemaType.string,
+              description: 'Optional description',
+            ),
+            'difficulty': Schema(
+              SchemaType.integer,
+              description:
+                  'Difficulty level from 1 (Easy) to 5 (Hard). Default is 2.',
+            ),
           },
           requiredProperties: ['title'],
         ),
@@ -70,10 +78,19 @@ class AIService {
         Schema(
           SchemaType.object,
           properties: {
-            'id': Schema(SchemaType.integer, description: 'ID of the task to update'),
+            'id': Schema(
+              SchemaType.integer,
+              description: 'ID of the task to update',
+            ),
             'title': Schema(SchemaType.string, description: 'New title'),
-            'isArchived': Schema(SchemaType.boolean, description: 'Set to true to archive/complete'),
-            'difficulty': Schema(SchemaType.integer, description: 'New difficulty level'),
+            'isArchived': Schema(
+              SchemaType.boolean,
+              description: 'Set to true to archive/complete',
+            ),
+            'difficulty': Schema(
+              SchemaType.integer,
+              description: 'New difficulty level',
+            ),
           },
           requiredProperties: ['id'],
         ),
@@ -90,7 +107,10 @@ class AIService {
         Schema(
           SchemaType.object,
           properties: {
-            'id': Schema(SchemaType.integer, description: 'ID of the task to delete'),
+            'id': Schema(
+              SchemaType.integer,
+              description: 'ID of the task to delete',
+            ),
           },
           requiredProperties: ['id'],
         ),
@@ -101,7 +121,7 @@ class AIService {
   /// Stream message from Gemini
   Stream<String> sendMessageStream(String userMessage) async* {
     final apiKey = await _storage.read(key: _apiKeyKey);
-    
+
     // Get selected model
     final prefs = await SharedPreferences.getInstance();
     final modelName = prefs.getString(_modelKey) ?? _defaultModel;
@@ -130,9 +150,9 @@ class AIService {
         ),
       );
 
-      final chat = model.startChat(history: [
-        Content.text(_buildSystemPrompt()),
-      ]);
+      final chat = model.startChat(
+        history: [Content.text(_buildSystemPrompt())],
+      );
 
       // Send message and get response (could be text or function call)
       var response = await chat.sendMessage(Content.text(userMessage));
@@ -141,22 +161,22 @@ class AIService {
       while (response.functionCalls.isNotEmpty) {
         final functionCall = response.functionCalls.first;
         Map<String, Object?> result;
-        
+
         try {
           if (functionCall.name == 'create_task') {
-             yield "🛠️ Creating task: ${functionCall.args['title']}...";
-             result = await _performCreateTask(functionCall.args);
+            yield "🛠️ Creating task: ${functionCall.args['title']}...";
+            result = await _performCreateTask(functionCall.args);
           } else if (functionCall.name == 'list_tasks') {
-             yield "📋 Reading tasks...";
-             result = await _performListTasks();
+            yield "📋 Reading tasks...";
+            result = await _performListTasks();
           } else if (functionCall.name == 'update_task') {
-             yield "✏️ Updating task ${functionCall.args['id']}...";
-             result = await _performUpdateTask(functionCall.args);
+            yield "✏️ Updating task ${functionCall.args['id']}...";
+            result = await _performUpdateTask(functionCall.args);
           } else if (functionCall.name == 'delete_task') {
-             yield "🗑️ Deleting task ${functionCall.args['id']}...";
-             result = await _performDeleteTask(functionCall.args);
+            yield "🗑️ Deleting task ${functionCall.args['id']}...";
+            result = await _performDeleteTask(functionCall.args);
           } else {
-             result = {'error': 'Unknown function ${functionCall.name}'};
+            result = {'error': 'Unknown function ${functionCall.name}'};
           }
         } catch (e) {
           result = {'error': e.toString()};
@@ -172,21 +192,22 @@ class AIService {
       if (response.text != null) {
         yield response.text!;
       }
-
     } catch (e) {
       yield "❌ **Error**\n\n`$e`";
     }
   }
 
   /// Helper to execute create_task
-  Future<Map<String, Object?>> _performCreateTask(Map<String, Object?> args) async {
+  Future<Map<String, Object?>> _performCreateTask(
+    Map<String, Object?> args,
+  ) async {
     try {
       final title = args['title'] as String;
       final description = args['description'] as String?;
       final difficulty = (args['difficulty'] as int?) ?? 2;
 
       // Random color logic could be improved, limiting to green for now
-      const defaultColor = '#00D26A'; 
+      const defaultColor = '#00D26A';
 
       final newTask = Task.create(
         title: title,
@@ -196,7 +217,11 @@ class AIService {
       );
 
       final id = await taskRepository.create(newTask);
-      return {'status': 'success', 'taskId': id, 'message': 'Task "$title" created successfully.'};
+      return {
+        'status': 'success',
+        'taskId': id,
+        'message': 'Task "$title" created successfully.',
+      };
     } catch (e) {
       return {'status': 'error', 'message': e.toString()};
     }
@@ -207,33 +232,46 @@ class AIService {
     try {
       final tasks = await taskRepository.getAllActive();
       // Only send minimal info to save context
-      final tasksData = tasks.map((t) => {
-        'id': t.id,
-        'title': t.title,
-        'difficulty': t.difficulty,
-        'streak': t.currentStreak,
-      }).toList();
-      return {'status': 'success', 'tasks': tasksData, 'count': tasksData.length};
+      final tasksData = tasks
+          .map(
+            (t) => {
+              'id': t.id,
+              'title': t.title,
+              'difficulty': t.difficulty,
+              'streak': t.currentStreak,
+            },
+          )
+          .toList();
+      return {
+        'status': 'success',
+        'tasks': tasksData,
+        'count': tasksData.length,
+      };
     } catch (e) {
       return {'status': 'error', 'message': e.toString()};
     }
   }
 
   /// Helper to update tasks
-  Future<Map<String, Object?>> _performUpdateTask(Map<String, Object?> args) async {
+  Future<Map<String, Object?>> _performUpdateTask(
+    Map<String, Object?> args,
+  ) async {
     try {
       // Cast safely since args comes from JSON
       final idRaw = args['id'];
-      if (idRaw == null) return {'status': 'error', 'message': 'Task ID required'};
+      if (idRaw == null)
+        return {'status': 'error', 'message': 'Task ID required'};
       final id = idRaw is int ? idRaw : int.parse(idRaw.toString());
 
       final task = await taskRepository.getById(id);
       if (task == null) return {'status': 'error', 'message': 'Task not found'};
 
       if (args.containsKey('title')) task.title = args['title'] as String;
-      if (args.containsKey('difficulty')) task.difficulty = (args['difficulty'] as int);
-      if (args.containsKey('isArchived')) task.isArchived = args['isArchived'] as bool;
-      
+      if (args.containsKey('difficulty'))
+        task.difficulty = (args['difficulty'] as int);
+      if (args.containsKey('isArchived'))
+        task.isArchived = args['isArchived'] as bool;
+
       await taskRepository.update(task);
       return {'status': 'success', 'message': 'Task updated'};
     } catch (e) {
@@ -242,14 +280,20 @@ class AIService {
   }
 
   /// Helper to delete tasks
-  Future<Map<String, Object?>> _performDeleteTask(Map<String, Object?> args) async {
+  Future<Map<String, Object?>> _performDeleteTask(
+    Map<String, Object?> args,
+  ) async {
     try {
       final idRaw = args['id'];
-      if (idRaw == null) return {'status': 'error', 'message': 'Task ID required'};
+      if (idRaw == null)
+        return {'status': 'error', 'message': 'Task ID required'};
       final id = idRaw is int ? idRaw : int.parse(idRaw.toString());
 
       final success = await taskRepository.delete(id);
-      return {'status': success ? 'success' : 'error', 'message': success ? 'Task deleted' : 'Delete failed'};
+      return {
+        'status': success ? 'success' : 'error',
+        'message': success ? 'Task deleted' : 'Delete failed',
+      };
     } catch (e) {
       return {'status': 'error', 'message': e.toString()};
     }

@@ -73,9 +73,11 @@ final filteredTasksProvider = Provider<AsyncValue<List<Task>>>((ref) {
     data: (tasks) {
       if (query.isEmpty) return AsyncValue.data(tasks);
       final filtered = tasks
-          .where((t) =>
-              t.title.toLowerCase().contains(query) ||
-              t.tags.any((tag) => tag.toLowerCase().contains(query)))
+          .where(
+            (t) =>
+                t.title.toLowerCase().contains(query) ||
+                t.tags.any((tag) => tag.toLowerCase().contains(query)),
+          )
           .toList();
       return AsyncValue.data(filtered);
     },
@@ -120,7 +122,9 @@ final simpleHeatmapProvider = StreamProvider<Map<int, int>>((ref) {
 });
 
 /// Per-task heatmaps - separate heatmap for each task
-final perTaskHeatmapsProvider = StreamProvider<Map<int, TaskHeatmapData>>((ref) {
+final perTaskHeatmapsProvider = StreamProvider<Map<int, TaskHeatmapData>>((
+  ref,
+) {
   final repo = ref.watch(commitRepositoryProvider);
   final taskRepo = ref.watch(taskRepositoryProvider);
   return repo.watchPerTaskHeatmaps(taskRepo: taskRepo, weeks: 52);
@@ -247,9 +251,7 @@ final dataExportServiceProvider = Provider<DataExportService>((ref) {
 
 /// AI Service provider
 final aiServiceProvider = Provider<AIService>((ref) {
-  return AIService(
-    taskRepository: ref.watch(taskRepositoryProvider),
-  );
+  return AIService(taskRepository: ref.watch(taskRepositoryProvider));
 });
 
 /// Verification Service provider (Auto-starts monitoring)

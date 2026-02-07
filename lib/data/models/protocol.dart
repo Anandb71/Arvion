@@ -15,10 +15,10 @@ class Protocol {
   // Schedule
   @Enumerated(EnumType.ordinal)
   ProtocolFrequency frequency;
-  
+
   // Days of week for weekly/custom (0 = Monday, 6 = Sunday)
   List<int> daysOfWeek;
-  
+
   // Time in minutes from midnight (e.g. 9:00 AM = 540)
   int? reminderTime;
 

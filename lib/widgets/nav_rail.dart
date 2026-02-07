@@ -8,11 +8,7 @@ class NavItem {
   final IconData icon;
   final IconData? selectedIcon;
 
-  const NavItem({
-    required this.label,
-    required this.icon,
-    this.selectedIcon,
-  });
+  const NavItem({required this.label, required this.icon, this.selectedIcon});
 }
 
 /// Desktop navigation rail
@@ -38,9 +34,7 @@ class NavRail extends StatelessWidget {
       width: 72,
       decoration: const BoxDecoration(
         color: ArvionColors.surface,
-        border: Border(
-          right: BorderSide(color: ArvionColors.border, width: 1),
-        ),
+        border: Border(right: BorderSide(color: ArvionColors.border, width: 1)),
       ),
       child: Column(
         children: [
@@ -91,10 +85,7 @@ class NavRail extends StatelessWidget {
           ),
           // Footer
           if (footer != null)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: footer,
-            ),
+            Padding(padding: const EdgeInsets.all(12), child: footer),
           const SizedBox(height: 12),
         ],
       ),
@@ -139,8 +130,8 @@ class _NavRailItemState extends State<_NavRailItem> {
               color: widget.isSelected
                   ? ArvionColors.primary.withValues(alpha: 0.15)
                   : _isHovered
-                      ? ArvionColors.surfaceLight
-                      : Colors.transparent,
+                  ? ArvionColors.surfaceLight
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               border: widget.isSelected
                   ? Border.all(
@@ -158,8 +149,8 @@ class _NavRailItemState extends State<_NavRailItem> {
                 color: widget.isSelected
                     ? ArvionColors.primary
                     : _isHovered
-                        ? ArvionColors.textPrimary
-                        : ArvionColors.textSecondary,
+                    ? ArvionColors.textPrimary
+                    : ArvionColors.textSecondary,
               ),
             ),
           ),
@@ -192,9 +183,7 @@ class ExtendedNavRail extends StatelessWidget {
       width: 200,
       decoration: const BoxDecoration(
         color: ArvionColors.surface,
-        border: Border(
-          right: BorderSide(color: ArvionColors.border, width: 1),
-        ),
+        border: Border(right: BorderSide(color: ArvionColors.border, width: 1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,10 +244,7 @@ class ExtendedNavRail extends StatelessWidget {
           ),
           // Footer
           if (footer != null)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: footer,
-            ),
+            Padding(padding: const EdgeInsets.all(12), child: footer),
         ],
       ),
     );
@@ -299,8 +285,8 @@ class _ExtendedNavItemState extends State<_ExtendedNavItem> {
             color: widget.isSelected
                 ? ArvionColors.primary.withValues(alpha: 0.15)
                 : _isHovered
-                    ? ArvionColors.surfaceLight
-                    : Colors.transparent,
+                ? ArvionColors.surfaceLight
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
@@ -322,8 +308,9 @@ class _ExtendedNavItemState extends State<_ExtendedNavItem> {
                     color: widget.isSelected
                         ? ArvionColors.textPrimary
                         : ArvionColors.textSecondary,
-                    fontWeight:
-                        widget.isSelected ? FontWeight.w500 : FontWeight.w400,
+                    fontWeight: widget.isSelected
+                        ? FontWeight.w500
+                        : FontWeight.w400,
                   ),
                 ),
               ),

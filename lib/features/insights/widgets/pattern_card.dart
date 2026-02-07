@@ -65,9 +65,7 @@ class PatternCard extends StatelessWidget {
               ),
               child: Text(
                 subtitle!,
-                style: ArvionTypography.labelSmall.copyWith(
-                  color: color,
-                ),
+                style: ArvionTypography.labelSmall.copyWith(color: color),
               ),
             ),
           ],

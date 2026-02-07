@@ -31,7 +31,8 @@ class _GlowButtonState extends State<GlowButton> {
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.glowColor ??
+    final color =
+        widget.glowColor ??
         (widget.isPrimary ? ArvionColors.primary : ArvionColors.secondary);
 
     return MouseRegion(
@@ -89,9 +90,7 @@ class _GlowButtonState extends State<GlowButton> {
                     Icon(
                       widget.icon,
                       size: 18,
-                      color: widget.isPrimary
-                          ? ArvionColors.background
-                          : color,
+                      color: widget.isPrimary ? ArvionColors.background : color,
                     ),
                   if ((widget.icon != null || widget.isLoading) &&
                       widget.label.isNotEmpty)

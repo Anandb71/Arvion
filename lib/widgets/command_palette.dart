@@ -63,10 +63,12 @@ class _CommandPaletteState extends State<CommandPalette> {
         _filteredCommands = widget.commands;
       } else {
         _filteredCommands = widget.commands
-            .where((c) =>
-                c.title.toLowerCase().contains(query.toLowerCase()) ||
-                (c.subtitle?.toLowerCase().contains(query.toLowerCase()) ??
-                    false))
+            .where(
+              (c) =>
+                  c.title.toLowerCase().contains(query.toLowerCase()) ||
+                  (c.subtitle?.toLowerCase().contains(query.toLowerCase()) ??
+                      false),
+            )
             .toList();
       }
       _selectedIndex = 0;
@@ -81,7 +83,8 @@ class _CommandPaletteState extends State<CommandPalette> {
         });
       } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
         setState(() {
-          _selectedIndex = (_selectedIndex - 1 + _filteredCommands.length) %
+          _selectedIndex =
+              (_selectedIndex - 1 + _filteredCommands.length) %
               _filteredCommands.length;
         });
       } else if (event.logicalKey == LogicalKeyboardKey.enter) {
@@ -233,18 +236,18 @@ class _CommandPaletteState extends State<CommandPalette> {
                                     children: [
                                       Text(
                                         command.title,
-                                        style:
-                                            ArvionTypography.bodyMedium.copyWith(
-                                          color: ArvionColors.textPrimary,
-                                        ),
+                                        style: ArvionTypography.bodyMedium
+                                            .copyWith(
+                                              color: ArvionColors.textPrimary,
+                                            ),
                                       ),
                                       if (command.subtitle != null)
                                         Text(
                                           command.subtitle!,
-                                          style:
-                                              ArvionTypography.bodySmall.copyWith(
-                                            color: ArvionColors.textMuted,
-                                          ),
+                                          style: ArvionTypography.bodySmall
+                                              .copyWith(
+                                                color: ArvionColors.textMuted,
+                                              ),
                                         ),
                                     ],
                                   ),
@@ -261,10 +264,10 @@ class _CommandPaletteState extends State<CommandPalette> {
                                     ),
                                     child: Text(
                                       command.shortcut!,
-                                      style:
-                                          ArvionTypography.monoXSmall.copyWith(
-                                        color: ArvionColors.textMuted,
-                                      ),
+                                      style: ArvionTypography.monoXSmall
+                                          .copyWith(
+                                            color: ArvionColors.textMuted,
+                                          ),
                                     ),
                                   ),
                               ],

@@ -11,7 +11,7 @@ class ArvionTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      
+
       // Colors
       colorScheme: const ColorScheme.dark(
         primary: ArvionColors.primary,
@@ -23,16 +23,16 @@ class ArvionTheme {
         onSurface: ArvionColors.textPrimary,
         onError: Colors.white,
       ),
-      
+
       // Scaffold
       scaffoldBackgroundColor: ArvionColors.background,
-      
+
       // Typography
       textTheme: ArvionTypography.textTheme.apply(
         bodyColor: ArvionColors.textPrimary,
         displayColor: ArvionColors.textPrimary,
       ),
-      
+
       // AppBar
       appBarTheme: const AppBarTheme(
         backgroundColor: ArvionColors.background,
@@ -40,7 +40,7 @@ class ArvionTheme {
         elevation: 0,
         centerTitle: false,
       ),
-      
+
       // Cards
       cardTheme: CardThemeData(
         color: ArvionColors.surface,
@@ -50,7 +50,7 @@ class ArvionTheme {
           side: const BorderSide(color: ArvionColors.border, width: 1),
         ),
       ),
-      
+
       // Dialogs
       dialogTheme: DialogThemeData(
         backgroundColor: ArvionColors.surface,
@@ -59,7 +59,7 @@ class ArvionTheme {
           side: const BorderSide(color: ArvionColors.border, width: 1),
         ),
       ),
-      
+
       // Buttons
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -67,30 +67,26 @@ class ArvionTheme {
           foregroundColor: ArvionColors.background,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
-      
+
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: ArvionColors.textPrimary,
           side: const BorderSide(color: ArvionColors.border),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
-      
+
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: ArvionColors.primary,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
       ),
-      
+
       // Input
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -107,16 +103,19 @@ class ArvionTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: ArvionColors.primary, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
         hintStyle: const TextStyle(color: ArvionColors.textMuted),
       ),
-      
+
       // Divider
       dividerTheme: const DividerThemeData(
         color: ArvionColors.border,
         thickness: 1,
       ),
-      
+
       // Navigation Rail (for desktop)
       navigationRailTheme: const NavigationRailThemeData(
         backgroundColor: ArvionColors.surface,
@@ -124,7 +123,7 @@ class ArvionTheme {
         unselectedIconTheme: IconThemeData(color: ArvionColors.textSecondary),
         indicatorColor: Color(0xFF0E4429),
       ),
-      
+
       // Tooltip
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
@@ -136,13 +135,13 @@ class ArvionTheme {
           color: ArvionColors.textPrimary,
         ),
       ),
-      
+
       // Icon
       iconTheme: const IconThemeData(
         color: ArvionColors.textSecondary,
         size: 24,
       ),
-      
+
       // Scrollbar
       scrollbarTheme: ScrollbarThemeData(
         thumbColor: WidgetStateProperty.all(ArvionColors.border),

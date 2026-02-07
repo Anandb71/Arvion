@@ -18,7 +18,7 @@ class OverviewSection extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 600;
-        
+
         return Wrap(
           spacing: 16,
           runSpacing: 16,

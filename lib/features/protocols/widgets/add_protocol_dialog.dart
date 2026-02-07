@@ -16,11 +16,11 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  
+
   String _selectedColor = '#10B981'; // Primary Green
   ProtocolFrequency _frequency = ProtocolFrequency.daily;
   final List<int> _selectedDays = [0, 1, 2, 3, 4]; // Mon-Fri default
-  
+
   final List<String> _colors = [
     '#10B981', // Green (Primary)
     '#3B82F6', // Blue
@@ -43,11 +43,13 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
     if (_formKey.currentState!.validate()) {
       final protocol = Protocol(
         title: _titleController.text,
-        description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+        description: _descriptionController.text.isEmpty
+            ? null
+            : _descriptionController.text,
         colorHex: _selectedColor,
         frequency: _frequency,
-        daysOfWeek: _frequency == ProtocolFrequency.daily 
-            ? [0, 1, 2, 3, 4, 5, 6] 
+        daysOfWeek: _frequency == ProtocolFrequency.daily
+            ? [0, 1, 2, 3, 4, 5, 6]
             : _selectedDays,
       );
 
@@ -78,7 +80,7 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Title
               TextFormField(
                 controller: _titleController,
@@ -95,7 +97,7 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Description
               TextFormField(
                 controller: _descriptionController,
@@ -106,7 +108,7 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Frequency
               DropdownButtonFormField<ProtocolFrequency>(
                 value: _frequency,
@@ -123,8 +125,9 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
                   if (value != null) setState(() => _frequency = value);
                 },
               ),
-              
-              if (_frequency == ProtocolFrequency.custom || _frequency == ProtocolFrequency.weekly) ...[
+
+              if (_frequency == ProtocolFrequency.custom ||
+                  _frequency == ProtocolFrequency.weekly) ...[
                 const SizedBox(height: 16),
                 const Text(
                   'Days of Week',
@@ -149,23 +152,27 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
                         });
                       },
                       checkmarkColor: ArvionColors.background,
-                      selectedColor: Color(int.parse(_selectedColor.replaceFirst('#', '0xFF'))),
+                      selectedColor: Color(
+                        int.parse(_selectedColor.replaceFirst('#', '0xFF')),
+                      ),
                       backgroundColor: ArvionColors.surface,
                       labelStyle: TextStyle(
-                        color: isSelected ? ArvionColors.background : ArvionColors.textPrimary,
+                        color: isSelected
+                            ? ArvionColors.background
+                            : ArvionColors.textPrimary,
                       ),
                     );
                   }),
                 ),
               ],
-              
+
               const SizedBox(height: 24),
               const Text(
                 'Color',
                 style: TextStyle(color: ArvionColors.textSecondary),
               ),
               const SizedBox(height: 12),
-              
+
               // Color Picker
               Wrap(
                 spacing: 12,
@@ -177,7 +184,9 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: Color(int.parse(color.replaceFirst('#', '0xFF'))),
+                        color: Color(
+                          int.parse(color.replaceFirst('#', '0xFF')),
+                        ),
                         shape: BoxShape.circle,
                         border: isSelected
                             ? Border.all(color: Colors.white, width: 2)
@@ -188,7 +197,7 @@ class _AddProtocolDialogState extends ConsumerState<AddProtocolDialog> {
                 }).toList(),
               ),
               const SizedBox(height: 32),
-              
+
               // Actions
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

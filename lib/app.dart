@@ -133,10 +133,7 @@ class _AppShellState extends ConsumerState<AppShell> {
         child: Scaffold(
           backgroundColor: ArvionColors.background,
           body: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minWidth: 600,
-              minHeight: 400,
-            ),
+            constraints: const BoxConstraints(minWidth: 600, minHeight: 400),
             child: Stack(
               children: [
                 Row(
@@ -145,7 +142,8 @@ class _AppShellState extends ConsumerState<AppShell> {
                     NavRail(
                       selectedIndex: ref.watch(navigationIndexProvider),
                       onDestinationSelected: (index) {
-                        ref.read(navigationIndexProvider.notifier).state = index;
+                        ref.read(navigationIndexProvider.notifier).state =
+                            index;
                       },
                       items: _navItems,
                     ),
@@ -167,7 +165,8 @@ class _AppShellState extends ConsumerState<AppShell> {
                         color: Colors.black54,
                         child: CommandPalette(
                           commands: _commands,
-                          onClose: () => setState(() => _showCommandPalette = false),
+                          onClose: () =>
+                              setState(() => _showCommandPalette = false),
                         ),
                       ),
                     ),
@@ -261,7 +260,8 @@ class _AppShellState extends ConsumerState<AppShell> {
         setState(() => _showCommandPalette = !_showCommandPalette);
       }
       // Escape to close command palette
-      if (event.logicalKey == LogicalKeyboardKey.escape && _showCommandPalette) {
+      if (event.logicalKey == LogicalKeyboardKey.escape &&
+          _showCommandPalette) {
         setState(() => _showCommandPalette = false);
       }
     }

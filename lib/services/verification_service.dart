@@ -13,13 +13,13 @@ class VerificationService {
   final TaskRepository taskRepository;
   final CommitRepository commitRepository;
   Timer? _timer;
-  
+
   // Track accumulated minutes for each task: taskId -> minutes
   final Map<int, int> _accumulatedMinutes = {};
-  
+
   // Track last commit time for each task to prevent multiple commits per day (optional)
   // or per session. For now, we'll allow multiple but maybe rate limit.
-  
+
   VerificationService({
     required this.taskRepository,
     required this.commitRepository,
@@ -57,12 +57,14 @@ class VerificationService {
 
       if (windowTitle.isEmpty) return;
 
-      // Note: We could also get process name for more robustness, 
+      // Note: We could also get process name for more robustness,
       // but title is often enough for "VS Code" etc.
-      
+
       // Get all tasks with app_usage verification
       final tasks = await taskRepository.getAllActive();
-      final usageTasks = tasks.where((t) => t.verificationType == VerificationType.appUsage).toList();
+      final usageTasks = tasks
+          .where((t) => t.verificationType == VerificationType.appUsage)
+          .toList();
 
       for (final task in usageTasks) {
         if (task.verificationConfig == null) continue;
@@ -71,20 +73,22 @@ class VerificationService {
           final config = jsonDecode(task.verificationConfig!);
           final targetApp = config['app_name'] as String?;
           final targetDuration = config['duration_minutes'] as int? ?? 60;
-          
-          if (targetApp != null && windowTitle.toLowerCase().contains(targetApp.toLowerCase())) {
+
+          if (targetApp != null &&
+              windowTitle.toLowerCase().contains(targetApp.toLowerCase())) {
             // Match found! Increment counter
-            _accumulatedMinutes[task.id] = (_accumulatedMinutes[task.id] ?? 0) + 1;
-            
+            _accumulatedMinutes[task.id] =
+                (_accumulatedMinutes[task.id] ?? 0) + 1;
+
             // Allow checking progress in UI if we were to expose it
             // print('Task ${task.title}: ${_accumulatedMinutes[task.id]}/$targetDuration mins');
 
             if (_accumulatedMinutes[task.id]! >= targetDuration) {
               await _commitTask(task);
-              // Reset counter after commit? Or keep it? 
-              // Usually for "Code 1hr", we want one commit. 
+              // Reset counter after commit? Or keep it?
+              // Usually for "Code 1hr", we want one commit.
               // Let's reset to allow another commit if they code ANOTHER hour.
-              _accumulatedMinutes[task.id] = 0; 
+              _accumulatedMinutes[task.id] = 0;
             }
           }
         } catch (e) {
@@ -106,7 +110,7 @@ class VerificationService {
     );
 
     await commitRepository.create(commit);
-     // Update task stats
+    // Update task stats
     await taskRepository.incrementCommits(task.id);
     await taskRepository.updateStreak(task.id, task.currentStreak + 1);
   }

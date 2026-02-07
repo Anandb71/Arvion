@@ -63,7 +63,8 @@ class CommitRepository {
 
       // Group commits by day
       final heatmap = <int, HeatmapCellInfo>{};
-      final dayContributions = <int, Map<int, int>>{}; // dayIndex -> {taskId: intensity}
+      final dayContributions =
+          <int, Map<int, int>>{}; // dayIndex -> {taskId: intensity}
 
       for (final commit in commits) {
         final dayIndex = commit.dayIndex;
@@ -85,7 +86,7 @@ class CommitRepository {
       for (final entry in dayContributions.entries) {
         final dayIndex = entry.key;
         final taskIntensities = entry.value;
-        
+
         int totalIntensity = 0;
         final contributions = <TaskContribution>[];
 
@@ -96,21 +97,25 @@ class CommitRepository {
 
           if (taskId == -1) {
             // General commit (no task)
-            contributions.add(TaskContribution(
-              taskId: -1,
-              colorHex: '#00D26A', // Default green
-              intensity: intensity,
-              taskTitle: 'General',
-            ));
+            contributions.add(
+              TaskContribution(
+                taskId: -1,
+                colorHex: '#00D26A', // Default green
+                intensity: intensity,
+                taskTitle: 'General',
+              ),
+            );
           } else {
             final task = taskMap[taskId];
             if (task != null) {
-              contributions.add(TaskContribution(
-                taskId: taskId,
-                colorHex: task.colorHex,
-                intensity: intensity,
-                taskTitle: task.title,
-              ));
+              contributions.add(
+                TaskContribution(
+                  taskId: taskId,
+                  colorHex: task.colorHex,
+                  intensity: intensity,
+                  taskTitle: task.title,
+                ),
+              );
             }
           }
         }
@@ -144,7 +149,8 @@ class CommitRepository {
       final taskMap = {for (var t in tasks) t.id: t};
 
       // Group commits by task - only for tasks that still exist
-      final taskHeatmaps = <int, Map<int, int>>{}; // taskId -> {dayIndex: intensity}
+      final taskHeatmaps =
+          <int, Map<int, int>>{}; // taskId -> {dayIndex: intensity}
       final taskCommitCounts = <int, int>{};
 
       for (final commit in commits) {
@@ -153,7 +159,7 @@ class CommitRepository {
         for (final taskId in commit.taskIds) {
           // Skip if task no longer exists
           if (!taskMap.containsKey(taskId)) continue;
-          
+
           taskHeatmaps.putIfAbsent(taskId, () => {});
           taskHeatmaps[taskId]![dayIndex] =
               (taskHeatmaps[taskId]![dayIndex] ?? 0) + commit.intensity;
@@ -268,17 +274,18 @@ class CommitRepository {
     final startOfDay = DateTime(today.year, today.month, today.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
-    return _commits
-        .filter()
-        .timestampBetween(startOfDay, endOfDay)
-        .count();
+    return _commits.filter().timestampBetween(startOfDay, endOfDay).count();
   }
 
   /// Get commits count for this week
   Future<int> getThisWeekCount() async {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final start = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+    final start = DateTime(
+      startOfWeek.year,
+      startOfWeek.month,
+      startOfWeek.day,
+    );
 
     return _commits.filter().timestampGreaterThan(start).count();
   }
@@ -303,17 +310,23 @@ class CommitRepository {
       final now = DateTime.now();
       // Start of current week (Monday)
       final currentWeekStart = now.subtract(Duration(days: now.weekday - 1));
-      final startOf8Weeks = currentWeekStart.subtract(const Duration(days: 7 * 7));
-      
-      final startDate = DateTime(startOf8Weeks.year, startOf8Weeks.month, startOf8Weeks.day);
-      
+      final startOf8Weeks = currentWeekStart.subtract(
+        const Duration(days: 7 * 7),
+      );
+
+      final startDate = DateTime(
+        startOf8Weeks.year,
+        startOf8Weeks.month,
+        startOf8Weeks.day,
+      );
+
       final commits = await _commits
           .filter()
           .timestampGreaterThan(startDate)
           .findAll();
 
       final weeks = <DateTime, int>{};
-      
+
       // Initialize all 8 weeks with 0
       for (int i = 0; i < 8; i++) {
         final date = startOf8Weeks.add(Duration(days: i * 7));
@@ -321,45 +334,66 @@ class CommitRepository {
         final normalizedDate = DateTime(date.year, date.month, date.day);
         weeks[normalizedDate] = 0;
       }
-      
+
       // Aggregate commits
       for (final commit in commits) {
         final date = commit.timestamp;
         // Find the Monday of this date's week
         final monday = date.subtract(Duration(days: date.weekday - 1));
-        final normalizedMonday = DateTime(monday.year, monday.month, monday.day);
-        
+        final normalizedMonday = DateTime(
+          monday.year,
+          monday.month,
+          monday.day,
+        );
+
         if (weeks.containsKey(normalizedMonday)) {
           weeks[normalizedMonday] = (weeks[normalizedMonday] ?? 0) + 1;
         }
       }
-      
+
       final result = <WeeklyActivity>[];
       final sortedWeeks = weeks.keys.toList()..sort();
-      
+
       for (final startOfWeek in sortedWeeks) {
         final endOfWeek = startOfWeek.add(const Duration(days: 6));
-        
+
         String label;
         if (startOfWeek.month == endOfWeek.month) {
-          label = '${startOfWeek.day}-${endOfWeek.day} ${_getMonthName(startOfWeek.month)}';
+          label =
+              '${startOfWeek.day}-${endOfWeek.day} ${_getMonthName(startOfWeek.month)}';
         } else {
-          label = '${startOfWeek.day} ${_getMonthName(startOfWeek.month)} - ${endOfWeek.day} ${_getMonthName(endOfWeek.month)}';
+          label =
+              '${startOfWeek.day} ${_getMonthName(startOfWeek.month)} - ${endOfWeek.day} ${_getMonthName(endOfWeek.month)}';
         }
 
-        result.add(WeeklyActivity(
-          label: label,
-          commits: weeks[startOfWeek] ?? 0,
-          startOfWeek: startOfWeek,
-        ));
+        result.add(
+          WeeklyActivity(
+            label: label,
+            commits: weeks[startOfWeek] ?? 0,
+            startOfWeek: startOfWeek,
+          ),
+        );
       }
-      
+
       return result;
     });
   }
 
   String _getMonthName(int month) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return months[month - 1];
   }
 
@@ -367,7 +401,7 @@ class CommitRepository {
   Stream<InsightPatterns> watchInsightPatterns() {
     return _commits.watchLazy(fireImmediately: true).asyncMap((_) async {
       final commits = await _commits.where().sortByTimestampDesc().findAll();
-      
+
       if (commits.isEmpty) {
         return const InsightPatterns.empty();
       }
@@ -380,52 +414,52 @@ class CommitRepository {
         final dayIndex = c.dayIndex;
         uniqueDays.add(dayIndex);
       }
-      
-      final sortedDays = uniqueDays.toList()..sort((a, b) => b.compareTo(a)); // Descending
-      
+
+      final sortedDays = uniqueDays.toList()
+        ..sort((a, b) => b.compareTo(a)); // Descending
+
       if (sortedDays.isEmpty) {
-         return const InsightPatterns.empty();
+        return const InsightPatterns.empty();
       }
 
       // Current Streak
       int currentStreak = 0;
       final todayIndex = DateTime.now().difference(DateTime(1970, 1, 1)).inDays;
-      
+
       // Check if we have a commit today or yesterday
       int checkDay = todayIndex;
       if (!sortedDays.contains(checkDay)) {
         checkDay--; // Try yesterday
       }
-      
+
       if (sortedDays.contains(checkDay)) {
         currentStreak = 1;
         int prevDay = checkDay;
         // Look for consecutive days before
         for (int i = 0; i < sortedDays.length; i++) {
-           final day = sortedDays[i];
-           if (day > checkDay) continue; // Should not happen given sort
-           if (day == checkDay) continue; // Already counted
-           
-           if (day == prevDay - 1) {
-             currentStreak++;
-             prevDay = day;
-           } else {
-             if (day < prevDay - 1) break;
-           }
+          final day = sortedDays[i];
+          if (day > checkDay) continue; // Should not happen given sort
+          if (day == checkDay) continue; // Already counted
+
+          if (day == prevDay - 1) {
+            currentStreak++;
+            prevDay = day;
+          } else {
+            if (day < prevDay - 1) break;
+          }
         }
       } else {
         currentStreak = 0;
       }
-      
-      
+
       // Longest Streak
       int longestStreak = 0;
       int tempStreak = 0;
       int? lastDay;
-      
+
       // Sort ascending for easier longest calculation
       final ascendingDays = sortedDays.reversed.toList();
-      
+
       for (final day in ascendingDays) {
         if (lastDay == null) {
           tempStreak = 1;
@@ -439,28 +473,29 @@ class CommitRepository {
         lastDay = day;
       }
       if (tempStreak > longestStreak) longestStreak = tempStreak;
-      
-      
+
       // 2. Most Productive Day
       final dayCounts = <int, int>{}; // weekday 1-7 -> count
       for (final c in commits) {
-        dayCounts[c.timestamp.weekday] = (dayCounts[c.timestamp.weekday] ?? 0) + 1;
+        dayCounts[c.timestamp.weekday] =
+            (dayCounts[c.timestamp.weekday] ?? 0) + 1;
       }
-      
+
       var maxDayCount = 0;
       var bestDay = 1;
-      
+
       dayCounts.forEach((day, count) {
         if (count > maxDayCount) {
           maxDayCount = count;
           bestDay = day;
         }
       });
-      
+
       const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      final mostProductiveDay = maxDayCount > 0 ? weekdays[bestDay - 1] : 'None';
-      
-      
+      final mostProductiveDay = maxDayCount > 0
+          ? weekdays[bestDay - 1]
+          : 'None';
+
       // 3. Consistency Score (Last 30 days)
       final now = DateTime.now();
       int activeDays30 = 0;
@@ -472,7 +507,7 @@ class CommitRepository {
         }
       }
       final consistencyScore = ((activeDays30 / 30) * 100).round();
-      
+
       return InsightPatterns(
         currentStreak: currentStreak,
         longestStreak: longestStreak,

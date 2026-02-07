@@ -64,19 +64,22 @@ class _AIPanelState extends ConsumerState<AIPanel> {
 
       // Finalize message
       setState(() {
-        _messages.add(AIMessage(content: _currentStreamedResponse, isUser: false));
+        _messages.add(
+          AIMessage(content: _currentStreamedResponse, isUser: false),
+        );
         _currentStreamedResponse = '';
         _isTyping = false;
       });
       _scrollToBottom();
-      
     } catch (e) {
       setState(() {
         _isTyping = false;
-        _messages.add(AIMessage(
-          content: "Error: Unable to connect to AI service.",
-          isUser: false,
-        ));
+        _messages.add(
+          AIMessage(
+            content: "Error: Unable to connect to AI service.",
+            isUser: false,
+          ),
+        );
       });
     }
   }
@@ -95,22 +98,32 @@ class _AIPanelState extends ConsumerState<AIPanel> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: ArvionColors.border, width: 0.5)),
+              border: Border(
+                bottom: BorderSide(color: ArvionColors.border, width: 0.5),
+              ),
             ),
             child: Row(
               children: [
-                const Icon(Icons.auto_awesome, color: ArvionColors.primary, size: 28),
+                const Icon(
+                  Icons.auto_awesome,
+                  color: ArvionColors.primary,
+                  size: 28,
+                ),
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Assistant',
-                      style: ArvionTypography.headlineMedium.copyWith(color: ArvionColors.textPrimary),
+                      style: ArvionTypography.headlineMedium.copyWith(
+                        color: ArvionColors.textPrimary,
+                      ),
                     ),
                     Text(
                       'Powered by Arvion Intelligence (Beta)',
-                      style: ArvionTypography.labelSmall.copyWith(color: ArvionColors.textMuted),
+                      style: ArvionTypography.labelSmall.copyWith(
+                        color: ArvionColors.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -138,7 +151,9 @@ class _AIPanelState extends ConsumerState<AIPanel> {
                           padding: const EdgeInsets.only(bottom: 16),
                           child: ChatBubble(
                             message: AIMessage(
-                              content: _currentStreamedResponse.isEmpty ? '...' : _currentStreamedResponse,
+                              content: _currentStreamedResponse.isEmpty
+                                  ? '...'
+                                  : _currentStreamedResponse,
                               isUser: false,
                             ),
                           ),
@@ -152,7 +167,9 @@ class _AIPanelState extends ConsumerState<AIPanel> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: ArvionColors.border, width: 0.5)),
+              border: Border(
+                top: BorderSide(color: ArvionColors.border, width: 0.5),
+              ),
               color: ArvionColors.surface,
             ),
             child: Row(
@@ -165,23 +182,37 @@ class _AIPanelState extends ConsumerState<AIPanel> {
                     onSubmitted: _sendMessage,
                     decoration: InputDecoration(
                       hintText: 'Ask anything about your tasks...',
-                      hintStyle: const TextStyle(color: ArvionColors.textSecondary),
+                      hintStyle: const TextStyle(
+                        color: ArvionColors.textSecondary,
+                      ),
                       filled: true,
                       fillColor: ArvionColors.background,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 IconButton.filled(
-                  onPressed: _isTyping ? null : () => _sendMessage(_inputController.text),
-                  icon: _isTyping 
-                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: ArvionColors.textMuted))
-                    : const Icon(Icons.send_rounded),
+                  onPressed: _isTyping
+                      ? null
+                      : () => _sendMessage(_inputController.text),
+                  icon: _isTyping
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: ArvionColors.textMuted,
+                          ),
+                        )
+                      : const Icon(Icons.send_rounded),
                   style: IconButton.styleFrom(
                     backgroundColor: ArvionColors.primary,
                     foregroundColor: ArvionColors.background,
@@ -200,11 +231,17 @@ class _AIPanelState extends ConsumerState<AIPanel> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.auto_awesome_outlined, size: 64, color: ArvionColors.textMuted.withValues(alpha: 0.3)),
+          Icon(
+            Icons.auto_awesome_outlined,
+            size: 64,
+            color: ArvionColors.textMuted.withValues(alpha: 0.3),
+          ),
           const SizedBox(height: 16),
           Text(
             'How can I help you today?',
-            style: ArvionTypography.titleMedium.copyWith(color: ArvionColors.textSecondary),
+            style: ArvionTypography.titleMedium.copyWith(
+              color: ArvionColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 32),
           Wrap(

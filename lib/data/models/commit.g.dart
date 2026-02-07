@@ -22,11 +22,7 @@ const CommitSchema = CollectionSchema(
       name: r'confidence',
       type: IsarType.double,
     ),
-    r'dayIndex': PropertySchema(
-      id: 1,
-      name: r'dayIndex',
-      type: IsarType.long,
-    ),
+    r'dayIndex': PropertySchema(id: 1, name: r'dayIndex', type: IsarType.long),
     r'durationMinutes': PropertySchema(
       id: 2,
       name: r'durationMinutes',
@@ -42,16 +38,8 @@ const CommitSchema = CollectionSchema(
       name: r'metadata',
       type: IsarType.string,
     ),
-    r'month': PropertySchema(
-      id: 5,
-      name: r'month',
-      type: IsarType.long,
-    ),
-    r'note': PropertySchema(
-      id: 6,
-      name: r'note',
-      type: IsarType.string,
-    ),
+    r'month': PropertySchema(id: 5, name: r'month', type: IsarType.long),
+    r'note': PropertySchema(id: 6, name: r'note', type: IsarType.string),
     r'source': PropertySchema(
       id: 7,
       name: r'source',
@@ -73,11 +61,7 @@ const CommitSchema = CollectionSchema(
       name: r'weekOfYear',
       type: IsarType.long,
     ),
-    r'year': PropertySchema(
-      id: 11,
-      name: r'year',
-      type: IsarType.long,
-    )
+    r'year': PropertySchema(id: 11, name: r'year', type: IsarType.long),
   },
   estimateSize: _commitEstimateSize,
   serialize: _commitSerialize,
@@ -95,7 +79,7 @@ const CommitSchema = CollectionSchema(
           name: r'timestamp',
           type: IndexType.value,
           caseSensitive: false,
-        )
+        ),
       ],
     ),
     r'taskIds': IndexSchema(
@@ -108,7 +92,7 @@ const CommitSchema = CollectionSchema(
           name: r'taskIds',
           type: IndexType.hash,
           caseSensitive: false,
-        )
+        ),
       ],
     ),
     r'dayIndex': IndexSchema(
@@ -121,9 +105,9 @@ const CommitSchema = CollectionSchema(
           name: r'dayIndex',
           type: IndexType.value,
           caseSensitive: false,
-        )
+        ),
       ],
-    )
+    ),
   },
   links: {},
   embeddedSchemas: {},
@@ -190,7 +174,7 @@ Commit _commitDeserialize(
   object.note = reader.readStringOrNull(offsets[6]);
   object.source =
       _CommitsourceValueEnumMap[reader.readByteOrNull(offsets[7])] ??
-          CommitSource.manual;
+      CommitSource.manual;
   object.taskIds = reader.readLongList(offsets[8]) ?? [];
   object.timestamp = reader.readDateTime(offsets[9]);
   return object;
@@ -219,7 +203,8 @@ P _commitDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 7:
       return (_CommitsourceValueEnumMap[reader.readByteOrNull(offset)] ??
-          CommitSource.manual) as P;
+              CommitSource.manual)
+          as P;
     case 8:
       return (reader.readLongList(offset) ?? []) as P;
     case 9:
@@ -289,10 +274,7 @@ extension CommitQueryWhereSort on QueryBuilder<Commit, Commit, QWhere> {
 extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
   QueryBuilder<Commit, Commit, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: id,
-        upper: id,
-      ));
+      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
     });
   }
 
@@ -318,8 +300,10 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     });
   }
 
-  QueryBuilder<Commit, Commit, QAfterWhereClause> idGreaterThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<Commit, Commit, QAfterWhereClause> idGreaterThan(
+    Id id, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -327,8 +311,10 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     });
   }
 
-  QueryBuilder<Commit, Commit, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<Commit, Commit, QAfterWhereClause> idLessThan(
+    Id id, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -343,56 +329,67 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: lowerId,
-        includeLower: includeLower,
-        upper: upperId,
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(
+        IdWhereClause.between(
+          lower: lowerId,
+          includeLower: includeLower,
+          upper: upperId,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterWhereClause> timestampEqualTo(
-      DateTime timestamp) {
+    DateTime timestamp,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'timestamp',
-        value: [timestamp],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'timestamp', value: [timestamp]),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterWhereClause> timestampNotEqualTo(
-      DateTime timestamp) {
+    DateTime timestamp,
+  ) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'timestamp',
-              lower: [],
-              upper: [timestamp],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'timestamp',
-              lower: [timestamp],
-              includeLower: false,
-              upper: [],
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'timestamp',
+                lower: [],
+                upper: [timestamp],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'timestamp',
+                lower: [timestamp],
+                includeLower: false,
+                upper: [],
+              ),
+            );
       } else {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'timestamp',
-              lower: [timestamp],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'timestamp',
-              lower: [],
-              upper: [timestamp],
-              includeUpper: false,
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'timestamp',
+                lower: [timestamp],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'timestamp',
+                lower: [],
+                upper: [timestamp],
+                includeUpper: false,
+              ),
+            );
       }
     });
   }
@@ -402,12 +399,14 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'timestamp',
-        lower: [timestamp],
-        includeLower: include,
-        upper: [],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'timestamp',
+          lower: [timestamp],
+          includeLower: include,
+          upper: [],
+        ),
+      );
     });
   }
 
@@ -416,12 +415,14 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'timestamp',
-        lower: [],
-        upper: [timestamp],
-        includeUpper: include,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'timestamp',
+          lower: [],
+          upper: [timestamp],
+          includeUpper: include,
+        ),
+      );
     });
   }
 
@@ -432,102 +433,122 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'timestamp',
-        lower: [lowerTimestamp],
-        includeLower: includeLower,
-        upper: [upperTimestamp],
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'timestamp',
+          lower: [lowerTimestamp],
+          includeLower: includeLower,
+          upper: [upperTimestamp],
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterWhereClause> taskIdsEqualTo(
-      List<int> taskIds) {
+    List<int> taskIds,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'taskIds',
-        value: [taskIds],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'taskIds', value: [taskIds]),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterWhereClause> taskIdsNotEqualTo(
-      List<int> taskIds) {
+    List<int> taskIds,
+  ) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'taskIds',
-              lower: [],
-              upper: [taskIds],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'taskIds',
-              lower: [taskIds],
-              includeLower: false,
-              upper: [],
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'taskIds',
+                lower: [],
+                upper: [taskIds],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'taskIds',
+                lower: [taskIds],
+                includeLower: false,
+                upper: [],
+              ),
+            );
       } else {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'taskIds',
-              lower: [taskIds],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'taskIds',
-              lower: [],
-              upper: [taskIds],
-              includeUpper: false,
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'taskIds',
+                lower: [taskIds],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'taskIds',
+                lower: [],
+                upper: [taskIds],
+                includeUpper: false,
+              ),
+            );
       }
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterWhereClause> dayIndexEqualTo(
-      int dayIndex) {
+    int dayIndex,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'dayIndex',
-        value: [dayIndex],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'dayIndex', value: [dayIndex]),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterWhereClause> dayIndexNotEqualTo(
-      int dayIndex) {
+    int dayIndex,
+  ) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'dayIndex',
-              lower: [],
-              upper: [dayIndex],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'dayIndex',
-              lower: [dayIndex],
-              includeLower: false,
-              upper: [],
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'dayIndex',
+                lower: [],
+                upper: [dayIndex],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'dayIndex',
+                lower: [dayIndex],
+                includeLower: false,
+                upper: [],
+              ),
+            );
       } else {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'dayIndex',
-              lower: [dayIndex],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'dayIndex',
-              lower: [],
-              upper: [dayIndex],
-              includeUpper: false,
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'dayIndex',
+                lower: [dayIndex],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'dayIndex',
+                lower: [],
+                upper: [dayIndex],
+                includeUpper: false,
+              ),
+            );
       }
     });
   }
@@ -537,12 +558,14 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dayIndex',
-        lower: [dayIndex],
-        includeLower: include,
-        upper: [],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'dayIndex',
+          lower: [dayIndex],
+          includeLower: include,
+          upper: [],
+        ),
+      );
     });
   }
 
@@ -551,12 +574,14 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dayIndex',
-        lower: [],
-        upper: [dayIndex],
-        includeUpper: include,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'dayIndex',
+          lower: [],
+          upper: [dayIndex],
+          includeUpper: include,
+        ),
+      );
     });
   }
 
@@ -567,13 +592,15 @@ extension CommitQueryWhere on QueryBuilder<Commit, Commit, QWhereClause> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dayIndex',
-        lower: [lowerDayIndex],
-        includeLower: includeLower,
-        upper: [upperDayIndex],
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'dayIndex',
+          lower: [lowerDayIndex],
+          includeLower: includeLower,
+          upper: [upperDayIndex],
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 }
@@ -584,11 +611,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'confidence',
-        value: value,
-        epsilon: epsilon,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'confidence',
+          value: value,
+          epsilon: epsilon,
+        ),
+      );
     });
   }
 
@@ -598,12 +627,14 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'confidence',
-        value: value,
-        epsilon: epsilon,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'confidence',
+          value: value,
+          epsilon: epsilon,
+        ),
+      );
     });
   }
 
@@ -613,12 +644,14 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'confidence',
-        value: value,
-        epsilon: epsilon,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'confidence',
+          value: value,
+          epsilon: epsilon,
+        ),
+      );
     });
   }
 
@@ -630,24 +663,26 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'confidence',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        epsilon: epsilon,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'confidence',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          epsilon: epsilon,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> dayIndexEqualTo(
-      int value) {
+    int value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'dayIndex',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'dayIndex', value: value),
+      );
     });
   }
 
@@ -656,11 +691,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'dayIndex',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'dayIndex',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -669,11 +706,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'dayIndex',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'dayIndex',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -684,54 +723,55 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'dayIndex',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'dayIndex',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> durationMinutesIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'durationMinutes',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'durationMinutes'),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition>
-      durationMinutesIsNotNull() {
+  durationMinutesIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'durationMinutes',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'durationMinutes'),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> durationMinutesEqualTo(
-      int? value) {
+    int? value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'durationMinutes',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'durationMinutes', value: value),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition>
-      durationMinutesGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
+  durationMinutesGreaterThan(int? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'durationMinutes',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'durationMinutes',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -740,11 +780,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'durationMinutes',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'durationMinutes',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -755,22 +797,23 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'durationMinutes',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'durationMinutes',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'id', value: value),
+      );
     });
   }
 
@@ -779,11 +822,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'id',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -792,11 +837,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'id',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -807,23 +854,25 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'id',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> intensityEqualTo(
-      int value) {
+    int value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'intensity',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'intensity', value: value),
+      );
     });
   }
 
@@ -832,11 +881,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'intensity',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'intensity',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -845,11 +896,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'intensity',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'intensity',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -860,29 +913,31 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'intensity',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'intensity',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> metadataIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'metadata',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'metadata'),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> metadataIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'metadata',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'metadata'),
+      );
     });
   }
 
@@ -891,11 +946,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'metadata',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'metadata',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -905,12 +962,14 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'metadata',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'metadata',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -920,12 +979,14 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'metadata',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'metadata',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -937,14 +998,16 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'metadata',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'metadata',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -953,11 +1016,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'metadata',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'metadata',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -966,62 +1031,67 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'metadata',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'metadata',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> metadataContains(
-      String value,
-      {bool caseSensitive = true}) {
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'metadata',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'metadata',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> metadataMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+    String pattern, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'metadata',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'metadata',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> metadataIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'metadata',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'metadata', value: ''),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> metadataIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'metadata',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'metadata', value: ''),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> monthEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'month',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'month', value: value),
+      );
     });
   }
 
@@ -1030,11 +1100,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'month',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'month',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1043,11 +1115,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'month',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'month',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1058,29 +1132,31 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'month',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'month',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> noteIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'note',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'note'),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> noteIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'note',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'note'),
+      );
     });
   }
 
@@ -1089,11 +1165,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'note',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -1103,12 +1181,14 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'note',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -1118,12 +1198,14 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'note',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -1135,14 +1217,16 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'note',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'note',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -1151,11 +1235,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'note',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
@@ -1164,62 +1250,69 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'note',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
-  QueryBuilder<Commit, Commit, QAfterFilterCondition> noteContains(String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<Commit, Commit, QAfterFilterCondition> noteContains(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'note',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> noteMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+    String pattern, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'note',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'note',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> noteIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'note',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'note', value: ''),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> noteIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'note',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'note', value: ''),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> sourceEqualTo(
-      CommitSource value) {
+    CommitSource value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'source',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'source', value: value),
+      );
     });
   }
 
@@ -1228,11 +1321,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'source',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'source',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1241,11 +1336,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'source',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'source',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1256,23 +1353,25 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'source',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'source',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> taskIdsElementEqualTo(
-      int value) {
+    int value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'taskIds',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'taskIds', value: value),
+      );
     });
   }
 
@@ -1281,11 +1380,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'taskIds',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'taskIds',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1294,11 +1395,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'taskIds',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'taskIds',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1309,50 +1412,35 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'taskIds',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'taskIds',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> taskIdsLengthEqualTo(
-      int length) {
+    int length,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'taskIds',
-        length,
-        true,
-        length,
-        true,
-      );
+      return query.listLength(r'taskIds', length, true, length, true);
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> taskIdsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'taskIds',
-        0,
-        true,
-        0,
-        true,
-      );
+      return query.listLength(r'taskIds', 0, true, 0, true);
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> taskIdsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'taskIds',
-        0,
-        false,
-        999999,
-        true,
-      );
+      return query.listLength(r'taskIds', 0, false, 999999, true);
     });
   }
 
@@ -1361,13 +1449,7 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'taskIds',
-        0,
-        true,
-        length,
-        include,
-      );
+      return query.listLength(r'taskIds', 0, true, length, include);
     });
   }
 
@@ -1376,13 +1458,7 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'taskIds',
-        length,
-        include,
-        999999,
-        true,
-      );
+      return query.listLength(r'taskIds', length, include, 999999, true);
     });
   }
 
@@ -1404,12 +1480,12 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> timestampEqualTo(
-      DateTime value) {
+    DateTime value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'timestamp',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'timestamp', value: value),
+      );
     });
   }
 
@@ -1418,11 +1494,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'timestamp',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'timestamp',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1431,11 +1509,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'timestamp',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'timestamp',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1446,23 +1526,25 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'timestamp',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'timestamp',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> weekOfYearEqualTo(
-      int value) {
+    int value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'weekOfYear',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'weekOfYear', value: value),
+      );
     });
   }
 
@@ -1471,11 +1553,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'weekOfYear',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'weekOfYear',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1484,11 +1568,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'weekOfYear',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'weekOfYear',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1499,22 +1585,23 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'weekOfYear',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'weekOfYear',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<Commit, Commit, QAfterFilterCondition> yearEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'year',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'year', value: value),
+      );
     });
   }
 
@@ -1523,11 +1610,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'year',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'year',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1536,11 +1625,13 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'year',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'year',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1551,13 +1642,15 @@ extension CommitQueryFilter on QueryBuilder<Commit, Commit, QFilterCondition> {
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'year',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'year',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 }
@@ -1871,8 +1964,9 @@ extension CommitQueryWhereDistinct on QueryBuilder<Commit, Commit, QDistinct> {
     });
   }
 
-  QueryBuilder<Commit, Commit, QDistinct> distinctByMetadata(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Commit, Commit, QDistinct> distinctByMetadata({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'metadata', caseSensitive: caseSensitive);
     });
@@ -1884,8 +1978,9 @@ extension CommitQueryWhereDistinct on QueryBuilder<Commit, Commit, QDistinct> {
     });
   }
 
-  QueryBuilder<Commit, Commit, QDistinct> distinctByNote(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Commit, Commit, QDistinct> distinctByNote({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'note', caseSensitive: caseSensitive);
     });

@@ -17,16 +17,8 @@ const ScreenTimeLogSchema = CollectionSchema(
   name: r'ScreenTimeLog',
   id: -5230470071382222010,
   properties: {
-    r'appName': PropertySchema(
-      id: 0,
-      name: r'appName',
-      type: IsarType.string,
-    ),
-    r'dayIndex': PropertySchema(
-      id: 1,
-      name: r'dayIndex',
-      type: IsarType.long,
-    ),
+    r'appName': PropertySchema(id: 0, name: r'appName', type: IsarType.string),
+    r'dayIndex': PropertySchema(id: 1, name: r'dayIndex', type: IsarType.long),
     r'durationSeconds': PropertySchema(
       id: 2,
       name: r'durationSeconds',
@@ -37,16 +29,8 @@ const ScreenTimeLogSchema = CollectionSchema(
       name: r'hourOfDay',
       type: IsarType.long,
     ),
-    r'isActive': PropertySchema(
-      id: 4,
-      name: r'isActive',
-      type: IsarType.bool,
-    ),
-    r'month': PropertySchema(
-      id: 5,
-      name: r'month',
-      type: IsarType.long,
-    ),
+    r'isActive': PropertySchema(id: 4, name: r'isActive', type: IsarType.bool),
+    r'month': PropertySchema(id: 5, name: r'month', type: IsarType.long),
     r'timestamp': PropertySchema(
       id: 6,
       name: r'timestamp',
@@ -57,11 +41,7 @@ const ScreenTimeLogSchema = CollectionSchema(
       name: r'windowTitle',
       type: IsarType.string,
     ),
-    r'year': PropertySchema(
-      id: 8,
-      name: r'year',
-      type: IsarType.long,
-    )
+    r'year': PropertySchema(id: 8, name: r'year', type: IsarType.long),
   },
   estimateSize: _screenTimeLogEstimateSize,
   serialize: _screenTimeLogSerialize,
@@ -79,7 +59,7 @@ const ScreenTimeLogSchema = CollectionSchema(
           name: r'timestamp',
           type: IndexType.value,
           caseSensitive: false,
-        )
+        ),
       ],
     ),
     r'appName': IndexSchema(
@@ -92,7 +72,7 @@ const ScreenTimeLogSchema = CollectionSchema(
           name: r'appName',
           type: IndexType.hash,
           caseSensitive: true,
-        )
+        ),
       ],
     ),
     r'dayIndex': IndexSchema(
@@ -105,9 +85,9 @@ const ScreenTimeLogSchema = CollectionSchema(
           name: r'dayIndex',
           type: IndexType.value,
           caseSensitive: false,
-        )
+        ),
       ],
-    )
+    ),
   },
   links: {},
   embeddedSchemas: {},
@@ -200,7 +180,10 @@ List<IsarLinkBase<dynamic>> _screenTimeLogGetLinks(ScreenTimeLog object) {
 }
 
 void _screenTimeLogAttach(
-    IsarCollection<dynamic> col, Id id, ScreenTimeLog object) {
+  IsarCollection<dynamic> col,
+  Id id,
+  ScreenTimeLog object,
+) {
   object.id = id;
 }
 
@@ -232,17 +215,16 @@ extension ScreenTimeLogQueryWhereSort
 extension ScreenTimeLogQueryWhere
     on QueryBuilder<ScreenTimeLog, ScreenTimeLog, QWhereClause> {
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause> idEqualTo(
-      Id id) {
+    Id id,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: id,
-        upper: id,
-      ));
+      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+    Id id,
+  ) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -265,8 +247,9 @@ extension ScreenTimeLogQueryWhere
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause> idGreaterThan(
-      Id id,
-      {bool include = false}) {
+    Id id, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -275,8 +258,9 @@ extension ScreenTimeLogQueryWhere
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause> idLessThan(
-      Id id,
-      {bool include = false}) {
+    Id id, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -291,225 +275,248 @@ extension ScreenTimeLogQueryWhere
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: lowerId,
-        includeLower: includeLower,
-        upper: upperId,
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(
+        IdWhereClause.between(
+          lower: lowerId,
+          includeLower: includeLower,
+          upper: upperId,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      timestampEqualTo(DateTime timestamp) {
+  timestampEqualTo(DateTime timestamp) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'timestamp',
-        value: [timestamp],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'timestamp', value: [timestamp]),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      timestampNotEqualTo(DateTime timestamp) {
+  timestampNotEqualTo(DateTime timestamp) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'timestamp',
-              lower: [],
-              upper: [timestamp],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'timestamp',
-              lower: [timestamp],
-              includeLower: false,
-              upper: [],
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'timestamp',
+                lower: [],
+                upper: [timestamp],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'timestamp',
+                lower: [timestamp],
+                includeLower: false,
+                upper: [],
+              ),
+            );
       } else {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'timestamp',
-              lower: [timestamp],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'timestamp',
-              lower: [],
-              upper: [timestamp],
-              includeUpper: false,
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'timestamp',
+                lower: [timestamp],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'timestamp',
+                lower: [],
+                upper: [timestamp],
+                includeUpper: false,
+              ),
+            );
       }
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      timestampGreaterThan(
-    DateTime timestamp, {
-    bool include = false,
-  }) {
+  timestampGreaterThan(DateTime timestamp, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'timestamp',
-        lower: [timestamp],
-        includeLower: include,
-        upper: [],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'timestamp',
+          lower: [timestamp],
+          includeLower: include,
+          upper: [],
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      timestampLessThan(
-    DateTime timestamp, {
-    bool include = false,
-  }) {
+  timestampLessThan(DateTime timestamp, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'timestamp',
-        lower: [],
-        upper: [timestamp],
-        includeUpper: include,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'timestamp',
+          lower: [],
+          upper: [timestamp],
+          includeUpper: include,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      timestampBetween(
+  timestampBetween(
     DateTime lowerTimestamp,
     DateTime upperTimestamp, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'timestamp',
-        lower: [lowerTimestamp],
-        includeLower: includeLower,
-        upper: [upperTimestamp],
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'timestamp',
+          lower: [lowerTimestamp],
+          includeLower: includeLower,
+          upper: [upperTimestamp],
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause> appNameEqualTo(
-      String appName) {
+    String appName,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'appName',
-        value: [appName],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'appName', value: [appName]),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      appNameNotEqualTo(String appName) {
+  appNameNotEqualTo(String appName) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'appName',
-              lower: [],
-              upper: [appName],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'appName',
-              lower: [appName],
-              includeLower: false,
-              upper: [],
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'appName',
+                lower: [],
+                upper: [appName],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'appName',
+                lower: [appName],
+                includeLower: false,
+                upper: [],
+              ),
+            );
       } else {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'appName',
-              lower: [appName],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'appName',
-              lower: [],
-              upper: [appName],
-              includeUpper: false,
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'appName',
+                lower: [appName],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'appName',
+                lower: [],
+                upper: [appName],
+                includeUpper: false,
+              ),
+            );
       }
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause> dayIndexEqualTo(
-      int dayIndex) {
+    int dayIndex,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'dayIndex',
-        value: [dayIndex],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'dayIndex', value: [dayIndex]),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      dayIndexNotEqualTo(int dayIndex) {
+  dayIndexNotEqualTo(int dayIndex) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'dayIndex',
-              lower: [],
-              upper: [dayIndex],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'dayIndex',
-              lower: [dayIndex],
-              includeLower: false,
-              upper: [],
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'dayIndex',
+                lower: [],
+                upper: [dayIndex],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'dayIndex',
+                lower: [dayIndex],
+                includeLower: false,
+                upper: [],
+              ),
+            );
       } else {
         return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'dayIndex',
-              lower: [dayIndex],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'dayIndex',
-              lower: [],
-              upper: [dayIndex],
-              includeUpper: false,
-            ));
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'dayIndex',
+                lower: [dayIndex],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'dayIndex',
+                lower: [],
+                upper: [dayIndex],
+                includeUpper: false,
+              ),
+            );
       }
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      dayIndexGreaterThan(
-    int dayIndex, {
-    bool include = false,
-  }) {
+  dayIndexGreaterThan(int dayIndex, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dayIndex',
-        lower: [dayIndex],
-        includeLower: include,
-        upper: [],
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'dayIndex',
+          lower: [dayIndex],
+          includeLower: include,
+          upper: [],
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterWhereClause>
-      dayIndexLessThan(
-    int dayIndex, {
-    bool include = false,
-  }) {
+  dayIndexLessThan(int dayIndex, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dayIndex',
-        lower: [],
-        upper: [dayIndex],
-        includeUpper: include,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'dayIndex',
+          lower: [],
+          upper: [dayIndex],
+          includeUpper: include,
+        ),
+      );
     });
   }
 
@@ -520,13 +527,15 @@ extension ScreenTimeLogQueryWhere
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'dayIndex',
-        lower: [lowerDayIndex],
-        includeLower: includeLower,
-        upper: [upperDayIndex],
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(
+        IndexWhereClause.between(
+          indexName: r'dayIndex',
+          lower: [lowerDayIndex],
+          includeLower: includeLower,
+          upper: [upperDayIndex],
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 }
@@ -534,53 +543,56 @@ extension ScreenTimeLogQueryWhere
 extension ScreenTimeLogQueryFilter
     on QueryBuilder<ScreenTimeLog, ScreenTimeLog, QFilterCondition> {
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  appNameEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'appName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'appName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'appName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameLessThan(
+  appNameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'appName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'appName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameBetween(
+  appNameLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'appName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
+  appNameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -588,276 +600,274 @@ extension ScreenTimeLogQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'appName',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'appName',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  appNameStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'appName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'appName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  appNameEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'appName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'appName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameContains(String value, {bool caseSensitive = true}) {
+  appNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'appName',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'appName',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameMatches(String pattern, {bool caseSensitive = true}) {
+  appNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'appName',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'appName',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameIsEmpty() {
+  appNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'appName',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'appName', value: ''),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      appNameIsNotEmpty() {
+  appNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'appName',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'appName', value: ''),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      dayIndexEqualTo(int value) {
+  dayIndexEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'dayIndex',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'dayIndex', value: value),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      dayIndexGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
+  dayIndexGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'dayIndex',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'dayIndex',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      dayIndexLessThan(
-    int value, {
-    bool include = false,
-  }) {
+  dayIndexLessThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'dayIndex',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'dayIndex',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      dayIndexBetween(
+  dayIndexBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'dayIndex',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'dayIndex',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      durationSecondsEqualTo(int value) {
+  durationSecondsEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'durationSeconds',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'durationSeconds', value: value),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      durationSecondsGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
+  durationSecondsGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'durationSeconds',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'durationSeconds',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      durationSecondsLessThan(
-    int value, {
-    bool include = false,
-  }) {
+  durationSecondsLessThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'durationSeconds',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'durationSeconds',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      durationSecondsBetween(
+  durationSecondsBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'durationSeconds',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'durationSeconds',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      hourOfDayEqualTo(int value) {
+  hourOfDayEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'hourOfDay',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'hourOfDay', value: value),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      hourOfDayGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
+  hourOfDayGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'hourOfDay',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'hourOfDay',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      hourOfDayLessThan(
-    int value, {
-    bool include = false,
-  }) {
+  hourOfDayLessThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'hourOfDay',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'hourOfDay',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      hourOfDayBetween(
+  hourOfDayBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'hourOfDay',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'hourOfDay',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition> idEqualTo(
-      Id value) {
+    Id value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'id', value: value),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      idGreaterThan(
-    Id value, {
-    bool include = false,
-  }) {
+  idGreaterThan(Id value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'id',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -866,11 +876,13 @@ extension ScreenTimeLogQueryFilter
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'id',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -881,186 +893,188 @@ extension ScreenTimeLogQueryFilter
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'id',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      isActiveEqualTo(bool value) {
+  isActiveEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isActive',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'isActive', value: value),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      monthEqualTo(int value) {
+  monthEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'month',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'month', value: value),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      monthGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
+  monthGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'month',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'month',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      monthLessThan(
-    int value, {
-    bool include = false,
-  }) {
+  monthLessThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'month',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'month',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      monthBetween(
+  monthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'month',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'month',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      timestampEqualTo(DateTime value) {
+  timestampEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'timestamp',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'timestamp', value: value),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      timestampGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  timestampGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'timestamp',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'timestamp',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      timestampLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  timestampLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'timestamp',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'timestamp',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      timestampBetween(
+  timestampBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'timestamp',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'timestamp',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  windowTitleEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'windowTitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'windowTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'windowTitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleLessThan(
+  windowTitleGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'windowTitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'windowTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleBetween(
+  windowTitleLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'windowTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
+  windowTitleBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1068,122 +1082,122 @@ extension ScreenTimeLogQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'windowTitle',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'windowTitle',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  windowTitleStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'windowTitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'windowTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  windowTitleEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'windowTitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'windowTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleContains(String value, {bool caseSensitive = true}) {
+  windowTitleContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'windowTitle',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'windowTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleMatches(String pattern, {bool caseSensitive = true}) {
+  windowTitleMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'windowTitle',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'windowTitle',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleIsEmpty() {
+  windowTitleIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'windowTitle',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'windowTitle', value: ''),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      windowTitleIsNotEmpty() {
+  windowTitleIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'windowTitle',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'windowTitle', value: ''),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition> yearEqualTo(
-      int value) {
+    int value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'year',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'year', value: value),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      yearGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
+  yearGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'year',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'year',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterFilterCondition>
-      yearLessThan(
-    int value, {
-    bool include = false,
-  }) {
+  yearLessThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'year',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'year',
+          value: value,
+        ),
+      );
     });
   }
 
@@ -1194,13 +1208,15 @@ extension ScreenTimeLogQueryFilter
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'year',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'year',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 }
@@ -1232,21 +1248,21 @@ extension ScreenTimeLogQuerySortBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      sortByDayIndexDesc() {
+  sortByDayIndexDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dayIndex', Sort.desc);
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      sortByDurationSeconds() {
+  sortByDurationSeconds() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationSeconds', Sort.asc);
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      sortByDurationSecondsDesc() {
+  sortByDurationSecondsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationSeconds', Sort.desc);
     });
@@ -1259,7 +1275,7 @@ extension ScreenTimeLogQuerySortBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      sortByHourOfDayDesc() {
+  sortByHourOfDayDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'hourOfDay', Sort.desc);
     });
@@ -1272,7 +1288,7 @@ extension ScreenTimeLogQuerySortBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      sortByIsActiveDesc() {
+  sortByIsActiveDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.desc);
     });
@@ -1297,7 +1313,7 @@ extension ScreenTimeLogQuerySortBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      sortByTimestampDesc() {
+  sortByTimestampDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timestamp', Sort.desc);
     });
@@ -1310,7 +1326,7 @@ extension ScreenTimeLogQuerySortBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      sortByWindowTitleDesc() {
+  sortByWindowTitleDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'windowTitle', Sort.desc);
     });
@@ -1350,21 +1366,21 @@ extension ScreenTimeLogQuerySortThenBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      thenByDayIndexDesc() {
+  thenByDayIndexDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'dayIndex', Sort.desc);
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      thenByDurationSeconds() {
+  thenByDurationSeconds() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationSeconds', Sort.asc);
     });
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      thenByDurationSecondsDesc() {
+  thenByDurationSecondsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationSeconds', Sort.desc);
     });
@@ -1377,7 +1393,7 @@ extension ScreenTimeLogQuerySortThenBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      thenByHourOfDayDesc() {
+  thenByHourOfDayDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'hourOfDay', Sort.desc);
     });
@@ -1402,7 +1418,7 @@ extension ScreenTimeLogQuerySortThenBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      thenByIsActiveDesc() {
+  thenByIsActiveDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isActive', Sort.desc);
     });
@@ -1427,7 +1443,7 @@ extension ScreenTimeLogQuerySortThenBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      thenByTimestampDesc() {
+  thenByTimestampDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timestamp', Sort.desc);
     });
@@ -1440,7 +1456,7 @@ extension ScreenTimeLogQuerySortThenBy
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QAfterSortBy>
-      thenByWindowTitleDesc() {
+  thenByWindowTitleDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'windowTitle', Sort.desc);
     });
@@ -1461,8 +1477,9 @@ extension ScreenTimeLogQuerySortThenBy
 
 extension ScreenTimeLogQueryWhereDistinct
     on QueryBuilder<ScreenTimeLog, ScreenTimeLog, QDistinct> {
-  QueryBuilder<ScreenTimeLog, ScreenTimeLog, QDistinct> distinctByAppName(
-      {bool caseSensitive = true}) {
+  QueryBuilder<ScreenTimeLog, ScreenTimeLog, QDistinct> distinctByAppName({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'appName', caseSensitive: caseSensitive);
     });
@@ -1475,7 +1492,7 @@ extension ScreenTimeLogQueryWhereDistinct
   }
 
   QueryBuilder<ScreenTimeLog, ScreenTimeLog, QDistinct>
-      distinctByDurationSeconds() {
+  distinctByDurationSeconds() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'durationSeconds');
     });
@@ -1505,8 +1522,9 @@ extension ScreenTimeLogQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ScreenTimeLog, ScreenTimeLog, QDistinct> distinctByWindowTitle(
-      {bool caseSensitive = true}) {
+  QueryBuilder<ScreenTimeLog, ScreenTimeLog, QDistinct> distinctByWindowTitle({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'windowTitle', caseSensitive: caseSensitive);
     });

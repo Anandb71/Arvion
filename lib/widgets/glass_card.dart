@@ -76,10 +76,7 @@ class GlassCard extends StatelessWidget {
     if (onTap != null) {
       return MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: onTap,
-          child: card,
-        ),
+        child: GestureDetector(onTap: onTap, child: card),
       );
     }
 

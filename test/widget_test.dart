@@ -7,9 +7,7 @@ import 'package:arvion/app.dart';
 void main() {
   testWidgets('App loads and displays dashboard', (WidgetTester tester) async {
     // Build our app and trigger a frame
-    await tester.pumpWidget(
-      const ProviderScope(child: ArvionApp()),
-    );
+    await tester.pumpWidget(const ProviderScope(child: ArvionApp()));
 
     // Wait for async operations
     await tester.pumpAndSettle();

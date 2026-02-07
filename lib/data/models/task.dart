@@ -73,10 +73,4 @@ class Task {
 }
 
 /// Verification types for tasks
-enum VerificationType {
-  manual,
-  gps,
-  appUsage,
-  notification,
-  timer,
-}
+enum VerificationType { manual, gps, appUsage, notification, timer }

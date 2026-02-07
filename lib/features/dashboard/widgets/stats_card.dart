@@ -101,9 +101,7 @@ class StatsRow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               border: index < items.length - 1
-                  ? const Border(
-                      right: BorderSide(color: ArvionColors.border),
-                    )
+                  ? const Border(right: BorderSide(color: ArvionColors.border))
                   : null,
             ),
             child: Column(
@@ -137,9 +135,5 @@ class StatItem {
   final String value;
   final Color? color;
 
-  const StatItem({
-    required this.label,
-    required this.value,
-    this.color,
-  });
+  const StatItem({required this.label, required this.value, this.color});
 }

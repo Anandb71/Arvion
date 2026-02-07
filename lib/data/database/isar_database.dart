@@ -30,7 +30,7 @@ class IsarDatabase {
     if (_instance != null) return _instance!;
 
     final dir = await getApplicationDocumentsDirectory();
-    
+
     _instance = await Isar.open(
       [TaskSchema, CommitSchema, ProtocolSchema, ScreenTimeLogSchema],
       directory: dir.path,

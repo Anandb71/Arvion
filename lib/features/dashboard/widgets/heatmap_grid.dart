@@ -114,8 +114,9 @@ class _HeatmapGridState extends State<HeatmapGrid>
         // Calculate responsive cell size based on available width
         final availableWidth = constraints.maxWidth - 32; // minus day labels
         final cellGap = 3.0;
-        final cellSize = ((availableWidth - (widget.weeks - 1) * cellGap) / widget.weeks)
-            .clamp(6.0, 12.0);
+        final cellSize =
+            ((availableWidth - (widget.weeks - 1) * cellGap) / widget.weeks)
+                .clamp(6.0, 12.0);
         final totalCellSize = cellSize + cellGap;
 
         final width = widget.weeks * totalCellSize;
@@ -137,28 +138,32 @@ class _HeatmapGridState extends State<HeatmapGrid>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-                          .map((day) => SizedBox(
-                                height: cellSize,
-                                child: Center(
-                                  child: Text(
-                                    day,
-                                    style: ArvionTypography.labelSmall.copyWith(
-                                      color: ArvionColors.textMuted,
-                                      fontSize: 9,
-                                    ),
+                          .map(
+                            (day) => SizedBox(
+                              height: cellSize,
+                              child: Center(
+                                child: Text(
+                                  day,
+                                  style: ArvionTypography.labelSmall.copyWith(
+                                    color: ArvionColors.textMuted,
+                                    fontSize: 9,
                                   ),
                                 ),
-                              ))
+                              ),
+                            ),
+                          )
                           .toList(),
                     ),
                   ),
                   const SizedBox(width: 4),
                   // Heatmap grid
                   MouseRegion(
-                    onHover: (e) => _handleHover(e.localPosition, cellSize, cellGap),
+                    onHover: (e) =>
+                        _handleHover(e.localPosition, cellSize, cellGap),
                     onExit: (_) => setState(() => _hoveredDayIndex = null),
                     child: GestureDetector(
-                      onTapDown: (d) => _handleTap(d.localPosition, cellSize, cellGap),
+                      onTapDown: (d) =>
+                          _handleTap(d.localPosition, cellSize, cellGap),
                       child: ListenableBuilder(
                         listenable: _animation,
                         builder: (context, child) {
@@ -193,15 +198,27 @@ class _HeatmapGridState extends State<HeatmapGrid>
   Widget _buildTooltip() {
     final date = _dateFromDayIndex(_hoveredDayIndex!);
     final cellInfo = widget.multiColorData?[_hoveredDayIndex!];
-    final intensity = cellInfo?.totalIntensity ?? widget.data?[_hoveredDayIndex!] ?? 0;
+    final intensity =
+        cellInfo?.totalIntensity ?? widget.data?[_hoveredDayIndex!] ?? 0;
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
 
     String taskInfo = '';
     if (cellInfo != null && cellInfo.contributions.isNotEmpty) {
-      taskInfo = ' • ${cellInfo.contributions.map((c) => c.taskTitle).join(', ')}';
+      taskInfo =
+          ' • ${cellInfo.contributions.map((c) => c.taskTitle).join(', ')}';
     }
 
     return Padding(
@@ -272,7 +289,7 @@ class _MultiColorHeatmapPainter extends CustomPainter {
 
         final date = startDate.add(Duration(days: cellIndex));
         final dayIndex = date.difference(epoch).inDays;
-        
+
         final x = col * totalCellSize;
         final y = row * totalCellSize;
         final rect = Rect.fromLTWH(x, y, cellSize, cellSize);
@@ -285,7 +302,10 @@ class _MultiColorHeatmapPainter extends CustomPainter {
         if (cellInfo != null && cellInfo.contributions.isNotEmpty) {
           // Multi-color cell - split into segments
           _drawMultiColorCell(
-            canvas, rect, cellRadius, cellInfo.contributions,
+            canvas,
+            rect,
+            cellRadius,
+            cellInfo.contributions,
             isHovered: hoveredDayIndex == dayIndex,
             glowPaint: glowPaint,
           );
@@ -300,7 +320,9 @@ class _MultiColorHeatmapPainter extends CustomPainter {
 
           // Glow for hovered
           if (hoveredDayIndex == dayIndex && intensity > 0) {
-            glowPaint.color = ArvionColors.heatmapGreen[intensity].withValues(alpha: 0.4);
+            glowPaint.color = ArvionColors.heatmapGreen[intensity].withValues(
+              alpha: 0.4,
+            );
             canvas.drawRRect(
               RRect.fromRectAndRadius(
                 rect.inflate(2),
@@ -335,7 +357,7 @@ class _MultiColorHeatmapPainter extends CustomPainter {
     required Paint glowPaint,
   }) {
     final paint = Paint()..style = PaintingStyle.fill;
-    
+
     if (contributions.length == 1) {
       // Single color
       final color = _hexToColor(contributions.first.colorHex);
@@ -344,7 +366,7 @@ class _MultiColorHeatmapPainter extends CustomPainter {
         RRect.fromRectAndRadius(rect, Radius.circular(radius)),
         paint,
       );
-      
+
       if (isHovered) {
         glowPaint.color = color.withValues(alpha: 0.4);
         canvas.drawRRect(
@@ -356,14 +378,14 @@ class _MultiColorHeatmapPainter extends CustomPainter {
       // Split diagonally for 2 colors
       final color1 = _hexToColor(contributions[0].colorHex);
       final color2 = _hexToColor(contributions[1].colorHex);
-      
+
       // Top-left triangle
       final path1 = Path()
         ..moveTo(rect.left, rect.top)
         ..lineTo(rect.right, rect.top)
         ..lineTo(rect.left, rect.bottom)
         ..close();
-      
+
       // Bottom-right triangle
       final path2 = Path()
         ..moveTo(rect.right, rect.top)
@@ -381,10 +403,10 @@ class _MultiColorHeatmapPainter extends CustomPainter {
     } else {
       // 3+ colors: split into vertical stripes
       final stripeWidth = rect.width / contributions.length;
-      
+
       canvas.save();
       canvas.clipRRect(RRect.fromRectAndRadius(rect, Radius.circular(radius)));
-      
+
       for (int i = 0; i < contributions.length; i++) {
         final color = _hexToColor(contributions[i].colorHex);
         paint.color = color;

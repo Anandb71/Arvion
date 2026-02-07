@@ -1,4 +1,3 @@
-
 /// Data class for weekly activity chart
 class WeeklyActivity {
   final String label;
@@ -25,10 +24,10 @@ class InsightPatterns {
     required this.mostProductiveDay,
     required this.consistencyScore,
   });
-  
+
   const InsightPatterns.empty()
-      : currentStreak = 0,
-        longestStreak = 0,
-        mostProductiveDay = 'None',
-        consistencyScore = 0;
+    : currentStreak = 0,
+      longestStreak = 0,
+      mostProductiveDay = 'None',
+      consistencyScore = 0;
 }

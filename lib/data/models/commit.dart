@@ -67,20 +67,9 @@ class Commit {
 
   /// Create a quick commit for a single task
   factory Commit.quick(int taskId, {int intensity = 3, String? note}) {
-    return Commit.create(
-      taskIds: [taskId],
-      intensity: intensity,
-      note: note,
-    );
+    return Commit.create(taskIds: [taskId], intensity: intensity, note: note);
   }
 }
 
 /// Source of the commit verification
-enum CommitSource {
-  manual,
-  gps,
-  appUsage,
-  notification,
-  timer,
-  auto,
-}
+enum CommitSource { manual, gps, appUsage, notification, timer, auto }

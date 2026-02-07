@@ -57,10 +57,8 @@ class WeeklyChart extends ConsumerWidget {
             child: CircularProgressIndicator(color: ArvionColors.primary),
           ),
         ),
-        error: (e, _) => SizedBox(
-          height: 250,
-          child: Center(child: Text('Error: $e')),
-        ),
+        error: (e, _) =>
+            SizedBox(height: 250, child: Center(child: Text('Error: $e'))),
       ),
     );
   }
@@ -75,10 +73,13 @@ class _WeeklyChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (weeklyData.isEmpty) return;
 
-    final maxCommits = weeklyData.map((w) => w.commits).reduce((a, b) => a > b ? a : b);
+    final maxCommits = weeklyData
+        .map((w) => w.commits)
+        .reduce((a, b) => a > b ? a : b);
     if (maxCommits == 0) return;
 
-    final barWidth = (size.width - (weeklyData.length - 1) * 8) / weeklyData.length;
+    final barWidth =
+        (size.width - (weeklyData.length - 1) * 8) / weeklyData.length;
     final paint = Paint()..style = PaintingStyle.fill;
     final textPainter = TextPainter(textDirection: TextDirection.ltr);
 

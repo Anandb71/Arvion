@@ -138,15 +138,9 @@ class DashboardScreen extends ConsumerWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 2,
-              child: _buildHeatmapSection(context, ref),
-            ),
+            Expanded(flex: 2, child: _buildHeatmapSection(context, ref)),
             const SizedBox(width: 24),
-            SizedBox(
-              width: 300,
-              child: _buildDailySummary(context, ref),
-            ),
+            SizedBox(width: 300, child: _buildDailySummary(context, ref)),
           ],
         ),
         const SizedBox(height: 24),
@@ -243,7 +237,9 @@ class DashboardScreen extends ConsumerWidget {
         if (taskHeatmaps.isEmpty) {
           return const SizedBox.shrink();
         }
-        return _ExpandableTaskGraphs(taskHeatmaps: taskHeatmaps.values.toList());
+        return _ExpandableTaskGraphs(
+          taskHeatmaps: taskHeatmaps.values.toList(),
+        );
       },
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
@@ -261,11 +257,13 @@ class DashboardScreen extends ConsumerWidget {
         tasks: activeTasksAsync.when(
           data: (tasks) => tasks
               .take(3)
-              .map((t) => DailyTask(
-                    title: t.title,
-                    colorHex: t.colorHex,
-                    todayCount: 0,
-                  ))
+              .map(
+                (t) => DailyTask(
+                  title: t.title,
+                  colorHex: t.colorHex,
+                  todayCount: 0,
+                ),
+              )
               .toList(),
           loading: () => [],
           error: (_, __) => [],
@@ -332,10 +330,7 @@ class _QuickCommitDialog extends StatefulWidget {
   final List<Task> tasks;
   final Function(List<int>, int, String?) onCommit;
 
-  const _QuickCommitDialog({
-    required this.tasks,
-    required this.onCommit,
-  });
+  const _QuickCommitDialog({required this.tasks, required this.onCommit});
 
   @override
   State<_QuickCommitDialog> createState() => _QuickCommitDialogState();
@@ -457,7 +452,9 @@ class _QuickCommitDialogState extends State<_QuickCommitDialog> {
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? _hexToColor(task.colorHex).withValues(alpha: 0.2)
+                              ? _hexToColor(
+                                  task.colorHex,
+                                ).withValues(alpha: 0.2)
                               : ArvionColors.surfaceLight,
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
@@ -524,7 +521,9 @@ class _QuickCommitDialogState extends State<_QuickCommitDialog> {
                     onPressed: () => widget.onCommit(
                       _selectedTaskIds.toList(),
                       _intensity,
-                      _noteController.text.isEmpty ? null : _noteController.text,
+                      _noteController.text.isEmpty
+                          ? null
+                          : _noteController.text,
                     ),
                   ),
                 ],
@@ -609,7 +608,10 @@ class _ExpandableTaskGraphsState extends State<_ExpandableTaskGraphs> {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: ArvionColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
@@ -637,10 +639,12 @@ class _ExpandableTaskGraphsState extends State<_ExpandableTaskGraphs> {
             padding: const EdgeInsets.only(top: 16),
             child: Column(
               children: widget.taskHeatmaps
-                  .map((taskData) => Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: TaskHeatmapGrid(taskData: taskData),
-                      ))
+                  .map(
+                    (taskData) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: TaskHeatmapGrid(taskData: taskData),
+                    ),
+                  )
                   .toList(),
             ),
           ),

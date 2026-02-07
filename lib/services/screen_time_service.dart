@@ -19,7 +19,7 @@ class ScreenTimeService {
   /// Start monitoring screen time
   void start() {
     if (_isRunning) return;
-    
+
     _isRunning = true;
     _timer = Timer.periodic(
       const Duration(seconds: _pollIntervalSeconds),
@@ -88,7 +88,7 @@ class ScreenTimeService {
     if (windowTitle.contains('Spotify')) return 'Spotify';
     if (windowTitle.contains('Slack')) return 'Slack';
     if (windowTitle.contains('Arvion')) return 'Arvion';
-    
+
     // If it has a dash, take the last part (common pattern: "Title - App Name")
     if (windowTitle.contains(' - ')) {
       final parts = windowTitle.split(' - ');
@@ -96,8 +96,8 @@ class ScreenTimeService {
     }
 
     // Otherwise use first 20 chars
-    return windowTitle.length > 20 
-        ? '${windowTitle.substring(0, 20)}...' 
+    return windowTitle.length > 20
+        ? '${windowTitle.substring(0, 20)}...'
         : windowTitle;
   }
 
@@ -106,16 +106,16 @@ class ScreenTimeService {
     try {
       final lastInputInfo = calloc<LASTINPUTINFO>();
       lastInputInfo.ref.cbSize = sizeOf<LASTINPUTINFO>();
-      
+
       if (GetLastInputInfo(lastInputInfo) != 0) {
         final lastInputTick = lastInputInfo.ref.dwTime;
         final currentTick = GetTickCount();
         final idleTime = currentTick - lastInputTick;
-        
+
         calloc.free(lastInputInfo);
         return idleTime < _idleThresholdMillis;
       }
-      
+
       calloc.free(lastInputInfo);
       return true; // Assume active if we can't determine
     } catch (e) {

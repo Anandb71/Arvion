@@ -41,35 +41,37 @@ class ProtocolRepository {
       if (protocol != null) {
         final now = DateTime.now();
         final today = DateTime(now.year, now.month, now.day);
-        
+
         // specific logic for completion could be added here
         // For MVP, we just mark updated time and increment completions
-        
+
         // Handle streak logic (simplified)
         if (protocol.lastCompletedAt != null) {
           final last = protocol.lastCompletedAt!;
-          final diff = today.difference(DateTime(last.year, last.month, last.day)).inDays;
-          
+          final diff = today
+              .difference(DateTime(last.year, last.month, last.day))
+              .inDays;
+
           if (diff == 1) {
             protocol.currentStreak++;
           } else if (diff > 1) {
             // Streak broken
             protocol.currentStreak = 1;
           } else {
-             // Already completed today
-             return;
+            // Already completed today
+            return;
           }
         } else {
           protocol.currentStreak = 1;
         }
-        
+
         if (protocol.currentStreak > protocol.longestStreak) {
           protocol.longestStreak = protocol.currentStreak;
         }
-        
+
         protocol.totalCompletions++;
         protocol.lastCompletedAt = now;
-        
+
         await _isar.protocols.put(protocol);
       }
     });

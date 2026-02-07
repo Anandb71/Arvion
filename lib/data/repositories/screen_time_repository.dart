@@ -63,14 +63,16 @@ class ScreenTimeRepository {
     // Group by app name
     final appTotals = <String, int>{};
     for (final log in logs) {
-      appTotals[log.appName] = (appTotals[log.appName] ?? 0) + log.durationSeconds;
+      appTotals[log.appName] =
+          (appTotals[log.appName] ?? 0) + log.durationSeconds;
     }
 
     // Convert to list and sort
-    final usage = appTotals.entries
-        .map((e) => AppUsage(appName: e.key, totalSeconds: e.value))
-        .toList()
-      ..sort((a, b) => b.totalSeconds.compareTo(a.totalSeconds));
+    final usage =
+        appTotals.entries
+            .map((e) => AppUsage(appName: e.key, totalSeconds: e.value))
+            .toList()
+          ..sort((a, b) => b.totalSeconds.compareTo(a.totalSeconds));
 
     return usage.take(limit).toList();
   }
@@ -107,7 +109,9 @@ class ScreenTimeRepository {
         .filter()
         .timestampBetween(startOfDay, endOfDay)
         .watch(fireImmediately: true)
-        .map((logs) => logs.fold<int>(0, (sum, log) => sum + log.durationSeconds));
+        .map(
+          (logs) => logs.fold<int>(0, (sum, log) => sum + log.durationSeconds),
+        );
   }
 
   /// Get all logs for a date range (for debugging)
@@ -122,7 +126,7 @@ class ScreenTimeRepository {
   /// Clear old logs (e.g., older than 90 days)
   Future<void> clearOldLogs({int daysToKeep = 90}) async {
     final cutoffDate = DateTime.now().subtract(Duration(days: daysToKeep));
-    
+
     await _isar.writeTxn(() async {
       await _logs.filter().timestampLessThan(cutoffDate).deleteAll();
     });

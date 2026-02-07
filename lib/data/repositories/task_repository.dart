@@ -23,7 +23,11 @@ class TaskRepository {
 
   /// Get all active tasks
   Future<List<Task>> getAllActive() {
-    return _tasks.filter().isArchivedEqualTo(false).sortByCreatedAtDesc().findAll();
+    return _tasks
+        .filter()
+        .isArchivedEqualTo(false)
+        .sortByCreatedAtDesc()
+        .findAll();
   }
 
   /// Get all tasks (including archived) for lookups

@@ -39,9 +39,7 @@ class SettingsScreen extends ConsumerWidget {
           // System section
           _buildSection(
             title: 'System',
-            children: [
-              const _StartupToggleTile(),
-            ],
+            children: [const _StartupToggleTile()],
           ),
           const SizedBox(height: 24),
 
@@ -53,7 +51,10 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.auto_awesome,
                 title: 'AI Provider',
                 subtitle: 'Google Gemini',
-                onTap: () => _showInfoSnackbar(context, 'Currently only Google Gemini is supported'),
+                onTap: () => _showInfoSnackbar(
+                  context,
+                  'Currently only Google Gemini is supported',
+                ),
               ),
               _SecureInputSettingTile(
                 icon: Icons.key_outlined,
@@ -86,7 +87,9 @@ class SettingsScreen extends ConsumerWidget {
                 subtitle: 'JSON format (Full backup)',
                 onTap: () async {
                   try {
-                    final path = await ref.read(dataExportServiceProvider).exportToJson();
+                    final path = await ref
+                        .read(dataExportServiceProvider)
+                        .exportToJson();
                     if (path != null && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Exported to $path')),
@@ -94,9 +97,9 @@ class SettingsScreen extends ConsumerWidget {
                     }
                   } catch (e) {
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: $e')),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Error: $e')));
                     }
                   }
                 },
@@ -107,7 +110,9 @@ class SettingsScreen extends ConsumerWidget {
                 subtitle: 'CSV format (Spreadsheet friendly)',
                 onTap: () async {
                   try {
-                    final path = await ref.read(dataExportServiceProvider).exportToCsv();
+                    final path = await ref
+                        .read(dataExportServiceProvider)
+                        .exportToCsv();
                     if (path != null && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Exported to $path')),
@@ -115,9 +120,9 @@ class SettingsScreen extends ConsumerWidget {
                     }
                   } catch (e) {
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: $e')),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('Error: $e')));
                     }
                   }
                 },
@@ -175,13 +180,19 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: ArvionColors.surface,
-        title: const Text('Clear All Data?', style: TextStyle(color: ArvionColors.textPrimary)),
+        title: const Text(
+          'Clear All Data?',
+          style: TextStyle(color: ArvionColors.textPrimary),
+        ),
         content: const Text(
           'This will delete ALL tasks, commits, protocols, and screen time data. This action cannot be undone!',
           style: TextStyle(color: ArvionColors.textSecondary),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
           TextButton(
             onPressed: () async {
               await IsarDatabase.clearAll();
@@ -192,7 +203,10 @@ class SettingsScreen extends ConsumerWidget {
                 );
               }
             },
-            child: const Text('Clear All', style: TextStyle(color: ArvionColors.error)),
+            child: const Text(
+              'Clear All',
+              style: TextStyle(color: ArvionColors.error),
+            ),
           ),
         ],
       ),
@@ -295,7 +309,8 @@ class _SecureInputSettingTile extends StatefulWidget {
   });
 
   @override
-  State<_SecureInputSettingTile> createState() => _SecureInputSettingTileState();
+  State<_SecureInputSettingTile> createState() =>
+      _SecureInputSettingTileState();
 }
 
 class _SecureInputSettingTileState extends State<_SecureInputSettingTile> {
@@ -327,11 +342,11 @@ class _SecureInputSettingTileState extends State<_SecureInputSettingTile> {
       _isSet = value.isNotEmpty;
       _isEditing = false;
     });
-     if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('API Key saved')),
-        );
-      }
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('API Key saved')));
+    }
   }
 
   @override
@@ -486,15 +501,17 @@ class _ModelSettingTileState extends State<_ModelSettingTile> {
           trailing: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: _selectedModel,
-              icon: const Icon(Icons.arrow_drop_down, color: ArvionColors.textMuted),
+              icon: const Icon(
+                Icons.arrow_drop_down,
+                color: ArvionColors.textMuted,
+              ),
               dropdownColor: ArvionColors.surface,
-              style: ArvionTypography.bodyMedium.copyWith(color: ArvionColors.textPrimary),
+              style: ArvionTypography.bodyMedium.copyWith(
+                color: ArvionColors.textPrimary,
+              ),
               onChanged: _saveValue,
               items: _models.entries.map((e) {
-                return DropdownMenuItem(
-                  value: e.key,
-                  child: Text(e.value),
-                );
+                return DropdownMenuItem(value: e.key, child: Text(e.value));
               }).toList(),
             ),
           ),
@@ -505,16 +522,23 @@ class _ModelSettingTileState extends State<_ModelSettingTile> {
             child: TextField(
               controller: _customController,
               onChanged: _saveCustomValue,
-              style: ArvionTypography.bodyMedium.copyWith(color: ArvionColors.textPrimary),
+              style: ArvionTypography.bodyMedium.copyWith(
+                color: ArvionColors.textPrimary,
+              ),
               decoration: InputDecoration(
                 isDense: true,
                 hintText: 'e.g. gemini-1.5-pro-latest',
-                hintStyle: ArvionTypography.bodyMedium.copyWith(color: ArvionColors.textMuted),
+                hintStyle: ArvionTypography.bodyMedium.copyWith(
+                  color: ArvionColors.textMuted,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(color: ArvionColors.border),
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
               ),
             ),
           ),
@@ -543,14 +567,21 @@ class _StartupToggleTileState extends State<_StartupToggleTile> {
 
   Future<void> _loadState() async {
     final enabled = await StartupService.isStartupEnabled();
-    if (mounted) setState(() { _isEnabled = enabled; _isLoading = false; });
+    if (mounted)
+      setState(() {
+        _isEnabled = enabled;
+        _isLoading = false;
+      });
   }
 
   Future<void> _toggleStartup(bool value) async {
     setState(() => _isLoading = true);
     final success = await StartupService.setStartupEnabled(value);
     if (success && mounted) {
-      setState(() { _isEnabled = value; _isLoading = false; });
+      setState(() {
+        _isEnabled = value;
+        _isLoading = false;
+      });
     } else if (mounted) {
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -566,7 +597,11 @@ class _StartupToggleTileState extends State<_StartupToggleTile> {
       title: 'Start on Startup',
       subtitle: _isEnabled ? 'Enabled' : 'Disabled',
       trailing: _isLoading
-          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
           : Switch(
               value: _isEnabled,
               onChanged: _toggleStartup,
