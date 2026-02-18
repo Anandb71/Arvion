@@ -477,15 +477,51 @@ class HeatmapLegend extends StatelessWidget {
 }
 
 /// Mini heatmap for a single task with custom color
-class TaskHeatmapGrid extends StatelessWidget {
+class TaskHeatmapGrid extends StatefulWidget {
   final TaskHeatmapData taskData;
   final int weeks;
+  final bool animate;
 
   const TaskHeatmapGrid({
     super.key,
     required this.taskData,
     this.weeks = 26, // Show 6 months by default
+    this.animate = true,
   });
+
+  @override
+  State<TaskHeatmapGrid> createState() => _TaskHeatmapGridState();
+}
+
+class _TaskHeatmapGridState extends State<TaskHeatmapGrid>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutQuart,
+    );
+
+    if (widget.animate) {
+      _controller.forward();
+    } else {
+      _controller.value = 1.0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Color _hexToColor(String hex) {
     hex = hex.replaceFirst('#', '');
@@ -507,18 +543,18 @@ class TaskHeatmapGrid extends StatelessWidget {
 
   DateTime _getStartDate() {
     final now = DateTime.now();
-    final daysToSubtract = now.weekday % 7 + (weeks - 1) * 7;
+    final daysToSubtract = now.weekday % 7 + (widget.weeks - 1) * 7;
     return now.subtract(Duration(days: daysToSubtract));
   }
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = _hexToColor(taskData.colorHex);
+    final baseColor = _hexToColor(widget.taskData.colorHex);
     final colorScale = _generateColorScale(baseColor);
     final cellSize = 8.0;
     final cellGap = 2.0;
     final totalCellSize = cellSize + cellGap;
-    final width = weeks * totalCellSize;
+    final width = widget.weeks * totalCellSize;
     final height = 7 * totalCellSize;
 
     return Container(
@@ -544,7 +580,7 @@ class TaskHeatmapGrid extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  taskData.taskTitle,
+                  widget.taskData.taskTitle,
                   style: ArvionTypography.titleSmall.copyWith(
                     color: ArvionColors.textPrimary,
                   ),
@@ -552,7 +588,7 @@ class TaskHeatmapGrid extends StatelessWidget {
                 ),
               ),
               Text(
-                '${taskData.totalCommits} commits',
+                '${widget.taskData.totalCommits} commits',
                 style: ArvionTypography.monoXSmall.copyWith(
                   color: ArvionColors.textMuted,
                 ),
@@ -562,16 +598,22 @@ class TaskHeatmapGrid extends StatelessWidget {
           const SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: CustomPaint(
-              size: Size(width, height),
-              painter: _TaskHeatmapPainter(
-                data: taskData.data,
-                weeks: weeks,
-                startDate: _getStartDate(),
-                colorScale: colorScale,
-                cellSize: cellSize,
-                cellGap: cellGap,
-              ),
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return CustomPaint(
+                  size: Size(width, height),
+                  painter: _TaskHeatmapPainter(
+                    data: widget.taskData.data,
+                    weeks: widget.weeks,
+                    startDate: _getStartDate(),
+                    colorScale: colorScale,
+                    cellSize: cellSize,
+                    cellGap: cellGap,
+                    animationValue: _animation.value,
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -587,6 +629,7 @@ class _TaskHeatmapPainter extends CustomPainter {
   final List<Color> colorScale;
   final double cellSize;
   final double cellGap;
+  final double animationValue;
 
   _TaskHeatmapPainter({
     required this.data,
@@ -595,6 +638,7 @@ class _TaskHeatmapPainter extends CustomPainter {
     required this.colorScale,
     required this.cellSize,
     required this.cellGap,
+    required this.animationValue,
   });
 
   @override
@@ -603,9 +647,15 @@ class _TaskHeatmapPainter extends CustomPainter {
     final paint = Paint()..style = PaintingStyle.fill;
     final epoch = DateTime(1970, 1, 1);
 
+    final totalCells = weeks * 7;
+    final visibleCells = (totalCells * animationValue).floor();
+
     for (int col = 0; col < weeks; col++) {
       for (int row = 0; row < 7; row++) {
-        final date = startDate.add(Duration(days: col * 7 + row));
+        final cellIndex = col * 7 + row;
+        if (cellIndex >= visibleCells) continue;
+
+        final date = startDate.add(Duration(days: cellIndex));
         final dayIndex = date.difference(epoch).inDays;
         final intensity = (data[dayIndex] ?? 0).clamp(0, 5);
 
@@ -624,6 +674,7 @@ class _TaskHeatmapPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _TaskHeatmapPainter oldDelegate) {
-    return oldDelegate.data != data;
+    return oldDelegate.data != data ||
+        oldDelegate.animationValue != animationValue;
   }
 }

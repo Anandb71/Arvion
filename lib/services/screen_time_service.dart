@@ -78,16 +78,23 @@ class ScreenTimeService {
   /// Extract app name from window title
   String _extractAppName(String windowTitle) {
     if (windowTitle.isEmpty) return 'Unknown';
+    final lowerTitle = windowTitle.toLowerCase();
 
     // Common patterns
-    if (windowTitle.contains('Visual Studio Code')) return 'VS Code';
-    if (windowTitle.contains('Chrome')) return 'Chrome';
-    if (windowTitle.contains('Firefox')) return 'Firefox';
-    if (windowTitle.contains('Edge')) return 'Edge';
-    if (windowTitle.contains('Discord')) return 'Discord';
-    if (windowTitle.contains('Spotify')) return 'Spotify';
-    if (windowTitle.contains('Slack')) return 'Slack';
-    if (windowTitle.contains('Arvion')) return 'Arvion';
+    if (lowerTitle.contains('visual studio code') || lowerTitle.contains('vscode')) {
+       // Optional: Extract project name if needed, but for now keep it simple to avoid clutter
+       return 'VS Code';
+    }
+    if (lowerTitle.contains('chrome')) return 'Chrome';
+    if (lowerTitle.contains('firefox')) return 'Firefox';
+    if (lowerTitle.contains('edge')) return 'Edge';
+    if (lowerTitle.contains('discord')) return 'Discord';
+    if (lowerTitle.contains('spotify')) return 'Spotify';
+    if (lowerTitle.contains('slack')) return 'Slack';
+    
+    // Self-detection
+    if (lowerTitle.contains('arvion')) return 'Arvion';
+    if (lowerTitle.contains('antigravity')) return 'Antigravity';
 
     // If it has a dash, take the last part (common pattern: "Title - App Name")
     if (windowTitle.contains(' - ')) {
