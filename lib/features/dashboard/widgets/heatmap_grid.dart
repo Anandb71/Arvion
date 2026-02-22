@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/utils/color_utils.dart';
 import '../../../providers/providers.dart';
 
 /// High-performance contribution heatmap grid with multi-color support
@@ -262,11 +263,6 @@ class _MultiColorHeatmapPainter extends CustomPainter {
     required this.cellGap,
   });
 
-  Color _hexToColor(String hex) {
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    return Color(int.parse(hex, radix: 16));
-  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -360,7 +356,7 @@ class _MultiColorHeatmapPainter extends CustomPainter {
 
     if (contributions.length == 1) {
       // Single color
-      final color = _hexToColor(contributions.first.colorHex);
+      final color = ColorUtils.hexToColor(contributions.first.colorHex);
       paint.color = color;
       canvas.drawRRect(
         RRect.fromRectAndRadius(rect, Radius.circular(radius)),
@@ -376,8 +372,8 @@ class _MultiColorHeatmapPainter extends CustomPainter {
       }
     } else if (contributions.length == 2) {
       // Split diagonally for 2 colors
-      final color1 = _hexToColor(contributions[0].colorHex);
-      final color2 = _hexToColor(contributions[1].colorHex);
+      final color1 = ColorUtils.hexToColor(contributions[0].colorHex);
+      final color2 = ColorUtils.hexToColor(contributions[1].colorHex);
 
       // Top-left triangle
       final path1 = Path()
@@ -408,7 +404,7 @@ class _MultiColorHeatmapPainter extends CustomPainter {
       canvas.clipRRect(RRect.fromRectAndRadius(rect, Radius.circular(radius)));
 
       for (int i = 0; i < contributions.length; i++) {
-        final color = _hexToColor(contributions[i].colorHex);
+        final color = ColorUtils.hexToColor(contributions[i].colorHex);
         paint.color = color;
         final stripeRect = Rect.fromLTWH(
           rect.left + i * stripeWidth,
@@ -523,33 +519,9 @@ class _TaskHeatmapGridState extends State<TaskHeatmapGrid>
     super.dispose();
   }
 
-  Color _hexToColor(String hex) {
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    return Color(int.parse(hex, radix: 16));
-  }
-
-  List<Color> _generateColorScale(Color baseColor) {
-    // Generate 6 levels from empty to full intensity
-    return [
-      ArvionColors.surfaceLight, // Level 0 - empty
-      baseColor.withValues(alpha: 0.2),
-      baseColor.withValues(alpha: 0.4),
-      baseColor.withValues(alpha: 0.6),
-      baseColor.withValues(alpha: 0.8),
-      baseColor, // Level 5 - full
-    ];
-  }
-
-  DateTime _getStartDate() {
-    final now = DateTime.now();
-    final daysToSubtract = now.weekday % 7 + (widget.weeks - 1) * 7;
-    return now.subtract(Duration(days: daysToSubtract));
-  }
-
   @override
   Widget build(BuildContext context) {
-    final baseColor = _hexToColor(widget.taskData.colorHex);
+    final baseColor = ColorUtils.hexToColor(widget.taskData.colorHex);
     final colorScale = _generateColorScale(baseColor);
     final cellSize = 8.0;
     final cellGap = 2.0;

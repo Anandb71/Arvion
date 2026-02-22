@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
+import '../../../core/utils/color_utils.dart';
 import '../../../widgets/glass_card.dart';
 import '../../../widgets/glow_button.dart';
 
@@ -188,18 +189,31 @@ class DailySummaryPanel extends StatelessWidget {
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: _hexToColor(task.colorHex),
+              color: ColorUtils.hexToColor(task.colorHex),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              task.title,
-              style: ArvionTypography.bodyMedium.copyWith(
-                color: ArvionColors.textPrimary,
-              ),
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  task.title,
+                  style: ArvionTypography.bodyMedium.copyWith(
+                    color: ArvionColors.textPrimary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (task.streak > 0)
+                  Text(
+                    '🔥 ${task.streak} day streak',
+                    style: ArvionTypography.labelSmall.copyWith(
+                      color: ArvionColors.primary,
+                      fontSize: 10,
+                    ),
+                  ),
+              ],
             ),
           ),
           const SizedBox(width: 8),
@@ -240,22 +254,18 @@ class DailySummaryPanel extends StatelessWidget {
     ];
     return '${weekdays[now.weekday - 1]}, ${months[now.month - 1]} ${now.day}';
   }
-
-  Color _hexToColor(String hex) {
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    return Color(int.parse(hex, radix: 16));
-  }
 }
 
 class DailyTask {
   final String title;
   final String colorHex;
   final int todayCount;
+  final int streak;
 
   const DailyTask({
     required this.title,
     required this.colorHex,
     this.todayCount = 0,
+    this.streak = 0,
   });
 }
