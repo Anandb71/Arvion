@@ -130,8 +130,8 @@ class _ScreenTimeDetailsScreenState
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    ArvionColors.primary.withValues(alpha: 0.15),
-                    ArvionColors.secondary.withValues(alpha: 0.1),
+                    ArvionColors.primary.withOpacity(0.15),
+                    ArvionColors.secondary.withOpacity(0.1),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,

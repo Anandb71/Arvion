@@ -49,7 +49,7 @@ class _GlowButtonState extends State<GlowButton> {
           boxShadow: _isHovered && widget.onPressed != null
               ? [
                   BoxShadow(
-                    color: color.withValues(alpha: 0.4),
+                    color: color.withOpacity(0.4),
                     blurRadius: 16,
                     spreadRadius: -2,
                   ),
@@ -160,7 +160,7 @@ class _GlowIconButtonState extends State<GlowIconButton> {
           boxShadow: _isHovered && widget.onPressed != null
               ? [
                   BoxShadow(
-                    color: color.withValues(alpha: 0.3),
+                    color: color.withOpacity(0.3),
                     blurRadius: 12,
                     spreadRadius: -2,
                   ),

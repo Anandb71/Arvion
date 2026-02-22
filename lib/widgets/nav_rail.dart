@@ -128,14 +128,14 @@ class _NavRailItemState extends State<_NavRailItem> {
             height: 48,
             decoration: BoxDecoration(
               color: widget.isSelected
-                  ? ArvionColors.primary.withValues(alpha: 0.15)
+                  ? ArvionColors.primary.withOpacity(0.15)
                   : _isHovered
                   ? ArvionColors.surfaceLight
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               border: widget.isSelected
                   ? Border.all(
-                      color: ArvionColors.primary.withValues(alpha: 0.3),
+                      color: ArvionColors.primary.withOpacity(0.3),
                       width: 1,
                     )
                   : null,
@@ -283,7 +283,7 @@ class _ExtendedNavItemState extends State<_ExtendedNavItem> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             color: widget.isSelected
-                ? ArvionColors.primary.withValues(alpha: 0.15)
+                ? ArvionColors.primary.withOpacity(0.15)
                 : _isHovered
                 ? ArvionColors.surfaceLight
                 : Colors.transparent,

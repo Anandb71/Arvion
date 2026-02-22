@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../../data/models/models.dart';
+import '../../core/utils/color_utils.dart';
 import '../../providers/providers.dart';
 import 'widgets/heatmap_grid.dart';
 import 'widgets/stats_card.dart';
@@ -262,6 +263,7 @@ class DashboardScreen extends ConsumerWidget {
                   title: t.title,
                   colorHex: t.colorHex,
                   todayCount: 0,
+                  streak: t.currentStreak,
                 ),
               )
               .toList(),
@@ -452,29 +454,30 @@ class _QuickCommitDialogState extends State<_QuickCommitDialog> {
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? _hexToColor(
-                                  task.colorHex,
-                                ).withValues(alpha: 0.2)
-                              : ArvionColors.surfaceLight,
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
                             color: isSelected
-                                ? _hexToColor(task.colorHex)
-                                : ArvionColors.border,
-                            width: isSelected ? 2 : 1,
-                          ),
+                            ? ColorUtils.hexToColor(
+                                task.colorHex,
+                              ).withOpacity(0.2)
+                            : ArvionColors.surfaceLight,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: isSelected
+                              ? ColorUtils.hexToColor(task.colorHex)
+                              : ArvionColors.border,
+                          width: isSelected ? 2 : 1,
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: _hexToColor(task.colorHex),
-                                borderRadius: BorderRadius.circular(2),
-                              ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: ColorUtils.hexToColor(task.colorHex),
+                              borderRadius: BorderRadius.circular(2),
                             ),
+                          ),
                             const SizedBox(width: 6),
                             Text(
                               task.title,
@@ -533,12 +536,6 @@ class _QuickCommitDialogState extends State<_QuickCommitDialog> {
         ),
       ),
     );
-  }
-
-  Color _hexToColor(String hex) {
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    return Color(int.parse(hex, radix: 16));
   }
 }
 
@@ -613,7 +610,7 @@ class _ExpandableTaskGraphsState extends State<_ExpandableTaskGraphs> {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: ArvionColors.primary.withValues(alpha: 0.1),
+                    color: ArvionColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(

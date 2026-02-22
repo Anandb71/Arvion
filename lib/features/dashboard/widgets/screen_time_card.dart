@@ -18,7 +18,7 @@ class ScreenTimeCard extends ConsumerWidget {
         gradient: LinearGradient(
           colors: [
             ArvionColors.surfaceLight,
-            ArvionColors.secondary.withValues(alpha: 0.05),
+            ArvionColors.secondary.withOpacity(0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -49,7 +49,7 @@ class ScreenTimeCard extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: ArvionColors.secondary.withValues(alpha: 0.15),
+                color: ArvionColors.secondary.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(

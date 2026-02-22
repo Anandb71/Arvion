@@ -5,10 +5,7 @@ import 'dart:convert';
 void main() {
   group('Task Model Tests', () {
     test('Task creation sets default values correctly', () {
-      final task = Task.create(
-        title: 'Test Task',
-        colorHex: '#FF0000',
-      );
+      final task = Task.create(title: 'Test Task', colorHex: '#FF0000');
 
       expect(task.title, 'Test Task');
       expect(task.colorHex, '#FF0000');
@@ -26,10 +23,7 @@ void main() {
         verificationType: VerificationType.appUsage,
       );
 
-      final config = {
-        'app_name': 'VS Code',
-        'duration_minutes': 45,
-      };
+      final config = {'app_name': 'VS Code', 'duration_minutes': 45};
 
       task.verificationConfig = jsonEncode(config);
 

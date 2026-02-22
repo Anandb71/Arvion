@@ -81,9 +81,10 @@ class ScreenTimeService {
     final lowerTitle = windowTitle.toLowerCase();
 
     // Common patterns
-    if (lowerTitle.contains('visual studio code') || lowerTitle.contains('vscode')) {
-       // Optional: Extract project name if needed, but for now keep it simple to avoid clutter
-       return 'VS Code';
+    if (lowerTitle.contains('visual studio code') ||
+        lowerTitle.contains('vscode')) {
+      // Optional: Extract project name if needed, but for now keep it simple to avoid clutter
+      return 'VS Code';
     }
     if (lowerTitle.contains('chrome')) return 'Chrome';
     if (lowerTitle.contains('firefox')) return 'Firefox';
@@ -91,7 +92,7 @@ class ScreenTimeService {
     if (lowerTitle.contains('discord')) return 'Discord';
     if (lowerTitle.contains('spotify')) return 'Spotify';
     if (lowerTitle.contains('slack')) return 'Slack';
-    
+
     // Self-detection
     if (lowerTitle.contains('arvion')) return 'Arvion';
     if (lowerTitle.contains('antigravity')) return 'Antigravity';

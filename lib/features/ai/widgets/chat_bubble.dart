@@ -14,10 +14,10 @@ class ChatBubble extends StatelessWidget {
     // Styling constants
     final bool isUser = message.isUser;
     final bgColor = isUser
-        ? ArvionColors.primary.withValues(alpha: 0.15)
+        ? ArvionColors.primary.withOpacity(0.15)
         : ArvionColors.surfaceLight;
     final borderColor = isUser
-        ? ArvionColors.primary.withValues(alpha: 0.3)
+        ? ArvionColors.primary.withOpacity(0.3)
         : ArvionColors.border;
     final alignment = isUser
         ? CrossAxisAlignment.end

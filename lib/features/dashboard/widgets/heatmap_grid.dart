@@ -333,7 +333,7 @@ class _MultiColorHeatmapPainter extends CustomPainter {
         if (hoveredDayIndex == dayIndex) {
           final borderPaint = Paint()
             ..style = PaintingStyle.stroke
-            ..color = ArvionColors.textPrimary.withValues(alpha: 0.5)
+            ..color = ArvionColors.textPrimary.withOpacity(0.5)
             ..strokeWidth = 1;
           canvas.drawRRect(
             RRect.fromRectAndRadius(rect, Radius.circular(cellRadius)),
@@ -364,7 +364,7 @@ class _MultiColorHeatmapPainter extends CustomPainter {
       );
 
       if (isHovered) {
-        glowPaint.color = color.withValues(alpha: 0.4);
+        glowPaint.color = color.withOpacity(0.4);
         canvas.drawRRect(
           RRect.fromRectAndRadius(rect.inflate(2), Radius.circular(radius + 2)),
           glowPaint,

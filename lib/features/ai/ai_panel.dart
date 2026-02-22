@@ -234,7 +234,7 @@ class _AIPanelState extends ConsumerState<AIPanel> {
           Icon(
             Icons.auto_awesome_outlined,
             size: 64,
-            color: ArvionColors.textMuted.withValues(alpha: 0.3),
+            color: ArvionColors.textMuted.withOpacity(0.3),
           ),
           const SizedBox(height: 16),
           Text(
