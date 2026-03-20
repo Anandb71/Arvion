@@ -1,6 +1,5 @@
 import 'package:isar/isar.dart';
 import '../models/commit.dart';
-import '../models/task.dart';
 import '../database/isar_database.dart';
 import 'task_repository.dart';
 import '../../providers/providers.dart';
@@ -463,7 +462,7 @@ class CommitRepository {
       for (final day in ascendingDays) {
         if (lastDay == null) {
           tempStreak = 1;
-        } else if (day == lastDay! + 1) {
+        } else if (day == lastDay + 1) {
           tempStreak++;
         } else {
           // Gap

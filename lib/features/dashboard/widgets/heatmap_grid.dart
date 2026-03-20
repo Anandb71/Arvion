@@ -263,7 +263,6 @@ class _MultiColorHeatmapPainter extends CustomPainter {
     required this.cellGap,
   });
 
-
   @override
   void paint(Canvas canvas, Size size) {
     final cellRadius = 2.0;
@@ -493,6 +492,23 @@ class _TaskHeatmapGridState extends State<TaskHeatmapGrid>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+
+  List<Color> _generateColorScale(Color baseColor) {
+    return List.generate(6, (index) {
+      if (index == 0) return ArvionColors.surfaceLight;
+      final opacity = 0.25 + (index * 0.15);
+      return Color.alphaBlend(
+        baseColor.withOpacity(opacity.clamp(0.0, 1.0)),
+        ArvionColors.surface,
+      );
+    });
+  }
+
+  DateTime _getStartDate() {
+    final now = DateTime.now();
+    final daysToSubtract = now.weekday % 7 + (widget.weeks - 1) * 7;
+    return now.subtract(Duration(days: daysToSubtract));
+  }
 
   @override
   void initState() {

@@ -454,30 +454,29 @@ class _QuickCommitDialogState extends State<_QuickCommitDialog> {
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
+                              ? ColorUtils.hexToColor(
+                                  task.colorHex,
+                                ).withOpacity(0.2)
+                              : ArvionColors.surfaceLight,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
                             color: isSelected
-                            ? ColorUtils.hexToColor(
-                                task.colorHex,
-                              ).withOpacity(0.2)
-                            : ArvionColors.surfaceLight,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: isSelected
-                              ? ColorUtils.hexToColor(task.colorHex)
-                              : ArvionColors.border,
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: ColorUtils.hexToColor(task.colorHex),
-                              borderRadius: BorderRadius.circular(2),
-                            ),
+                                ? ColorUtils.hexToColor(task.colorHex)
+                                : ArvionColors.border,
+                            width: isSelected ? 2 : 1,
                           ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: ColorUtils.hexToColor(task.colorHex),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               task.title,

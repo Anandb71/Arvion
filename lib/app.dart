@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +14,6 @@ import 'features/settings/settings_screen.dart';
 import 'features/insights/insights_screen.dart';
 import 'features/protocols/protocols_screen.dart';
 import 'features/ai/ai_panel.dart';
-import 'data/database/isar_database.dart';
 
 /// Main Arvion application
 class ArvionApp extends StatelessWidget {
@@ -39,6 +40,22 @@ class AppShell extends ConsumerStatefulWidget {
 
 class _AppShellState extends ConsumerState<AppShell> {
   bool _showCommandPalette = false;
+  final _random = Random();
+  late String _focusCue;
+
+  final List<String> _focusCues = const [
+    'One tiny commit beats one giant someday.',
+    'Momentum compounds. Log the next win.',
+    'Progress over perfection, every single day.',
+    'Small streaks become big stories.',
+    'Future you says: thanks for shipping today.',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _focusCue = _focusCues[_random.nextInt(_focusCues.length)];
+  }
 
   final _navItems = const [
     NavItem(
@@ -88,7 +105,7 @@ class _AppShellState extends ConsumerState<AppShell> {
       subtitle: 'Log a quick commit',
       icon: Icons.commit,
       shortcut: 'Ctrl+Enter',
-      onSelect: () {},
+      onSelect: _triggerQuickCommit,
     ),
     CommandItem(
       id: 'ask_ai',
@@ -110,16 +127,47 @@ class _AppShellState extends ConsumerState<AppShell> {
       onSelect: () => ref.read(navigationIndexProvider.notifier).state = 1,
     ),
     CommandItem(
+      id: 'goto_protocols',
+      icon: Icons.flag,
+      title: 'Go to Protocols',
+      shortcut: 'Ctrl+3',
+      onSelect: () => _navigateTo(2),
+    ),
+    CommandItem(
+      id: 'goto_insights',
+      icon: Icons.insights,
+      title: 'Go to Insights',
+      shortcut: 'Ctrl+4',
+      onSelect: () => _navigateTo(3),
+    ),
+    CommandItem(
+      id: 'goto_assistant',
+      icon: Icons.auto_awesome,
+      title: 'Go to Assistant',
+      shortcut: 'Ctrl+5',
+      onSelect: () => _navigateTo(4),
+    ),
+    CommandItem(
       id: 'goto_settings',
       title: 'Go to Settings',
       icon: Icons.settings,
-      onSelect: () => ref.read(navigationIndexProvider.notifier).state = 5,
+      shortcut: 'Ctrl+6',
+      onSelect: () => _navigateTo(5),
+    ),
+    CommandItem(
+      id: 'refresh_focus_cue',
+      title: 'Refresh Focus Cue',
+      subtitle: 'Generate a new motivation line',
+      icon: Icons.auto_fix_high,
+      shortcut: 'Ctrl+Shift+K',
+      onSelect: _refreshFocusCue,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
     final dbInitialized = ref.watch(databaseInitializedProvider);
+    final selectedIndex = ref.watch(navigationIndexProvider);
     // Ensure verification service is running
     ref.watch(verificationServiceProvider);
     // Ensure screen time tracking is running
@@ -140,10 +188,9 @@ class _AppShellState extends ConsumerState<AppShell> {
                   children: [
                     // Navigation rail
                     NavRail(
-                      selectedIndex: ref.watch(navigationIndexProvider),
+                      selectedIndex: selectedIndex,
                       onDestinationSelected: (index) {
-                        ref.read(navigationIndexProvider.notifier).state =
-                            index;
+                        _navigateTo(index);
                       },
                       items: _navItems,
                     ),
@@ -151,10 +198,61 @@ class _AppShellState extends ConsumerState<AppShell> {
                     Expanded(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
-                        child: _buildScreen(ref.watch(navigationIndexProvider)),
+                        child: _buildScreen(selectedIndex),
                       ),
                     ),
                   ],
+                ),
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: IgnorePointer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: ArvionColors.surface.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: ArvionColors.border),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.bolt,
+                              size: 14,
+                              color: ArvionColors.primary,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              _navItems[selectedIndex].label,
+                              style: const TextStyle(
+                                color: ArvionColors.textPrimary,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            const Text(
+                              '•',
+                              style: TextStyle(color: ArvionColors.textMuted),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              _focusCue,
+                              style: const TextStyle(
+                                color: ArvionColors.textSecondary,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 // Command palette overlay
                 if (_showCommandPalette)
@@ -227,43 +325,75 @@ class _AppShellState extends ConsumerState<AppShell> {
     }
   }
 
-  Widget _buildPlaceholder(String title, IconData icon) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 64, color: ArvionColors.textMuted),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: const TextStyle(
-              color: ArvionColors.textPrimary,
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Coming soon',
-            style: TextStyle(color: ArvionColors.textMuted),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _handleKeyEvent(KeyEvent event) {
     if (event is KeyDownEvent) {
       // Ctrl+K for command palette
       if (event.logicalKey == LogicalKeyboardKey.keyK &&
           HardwareKeyboard.instance.isControlPressed) {
-        setState(() => _showCommandPalette = !_showCommandPalette);
+        if (HardwareKeyboard.instance.isShiftPressed) {
+          _refreshFocusCue();
+        } else {
+          setState(() => _showCommandPalette = !_showCommandPalette);
+        }
       }
+
+      // Ctrl + number to jump to section quickly
+      if (HardwareKeyboard.instance.isControlPressed) {
+        const keys = [
+          LogicalKeyboardKey.digit1,
+          LogicalKeyboardKey.digit2,
+          LogicalKeyboardKey.digit3,
+          LogicalKeyboardKey.digit4,
+          LogicalKeyboardKey.digit5,
+          LogicalKeyboardKey.digit6,
+        ];
+        final keyIndex = keys.indexOf(event.logicalKey);
+        if (keyIndex >= 0 && keyIndex < _navItems.length) {
+          _navigateTo(keyIndex);
+        }
+      }
+
+      // Ctrl + Enter for quick commit flow
+      if (event.logicalKey == LogicalKeyboardKey.enter &&
+          HardwareKeyboard.instance.isControlPressed) {
+        _triggerQuickCommit();
+      }
+
       // Escape to close command palette
       if (event.logicalKey == LogicalKeyboardKey.escape &&
           _showCommandPalette) {
         setState(() => _showCommandPalette = false);
       }
     }
+  }
+
+  void _navigateTo(int index) {
+    ref.read(navigationIndexProvider.notifier).state = index;
+  }
+
+  void _triggerQuickCommit() {
+    _navigateTo(0);
+    _showToast('Switched to Dashboard — use Daily Summary for Quick Commit.');
+  }
+
+  void _refreshFocusCue() {
+    if (_focusCues.length < 2) return;
+    setState(() {
+      String next = _focusCue;
+      while (next == _focusCue) {
+        next = _focusCues[_random.nextInt(_focusCues.length)];
+      }
+      _focusCue = next;
+    });
+  }
+
+  void _showToast(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(milliseconds: 1800),
+      ),
+    );
   }
 }

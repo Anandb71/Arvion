@@ -77,11 +77,13 @@ class _CommandPaletteState extends State<CommandPalette> {
 
   void _handleKeyEvent(KeyEvent event) {
     if (event is KeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowDown &&
+          _filteredCommands.isNotEmpty) {
         setState(() {
           _selectedIndex = (_selectedIndex + 1) % _filteredCommands.length;
         });
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp &&
+          _filteredCommands.isNotEmpty) {
         setState(() {
           _selectedIndex =
               (_selectedIndex - 1 + _filteredCommands.length) %
@@ -158,6 +160,19 @@ class _CommandPaletteState extends State<CommandPalette> {
                           ),
                         ),
                       ),
+                      if (_searchController.text.isNotEmpty)
+                        IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            _onSearchChanged('');
+                          },
+                          tooltip: 'Clear search',
+                          icon: const Icon(
+                            Icons.close,
+                            size: 16,
+                            color: ArvionColors.textMuted,
+                          ),
+                        ),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 6,
@@ -277,6 +292,30 @@ class _CommandPaletteState extends State<CommandPalette> {
                       },
                     ),
                   ),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+                  decoration: const BoxDecoration(
+                    border: Border(top: BorderSide(color: ArvionColors.border)),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        '${_filteredCommands.length} command${_filteredCommands.length == 1 ? '' : 's'}',
+                        style: ArvionTypography.monoXSmall.copyWith(
+                          color: ArvionColors.textMuted,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        '↑↓ navigate • Enter run',
+                        style: ArvionTypography.monoXSmall.copyWith(
+                          color: ArvionColors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
